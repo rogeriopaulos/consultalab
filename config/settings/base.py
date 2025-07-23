@@ -352,5 +352,12 @@ BACEN_API_INFORMES = env(
 # ------------------------------------------------------------------------------
 # https://django-axes.readthedocs.io/en/latest/4_configuration.html#configuring-project-settings
 AXES_LOCK_OUT_AT_FAILURE = False
+# https://django-axes.readthedocs.io/en/latest/4_configuration.html#configuring-reverse-proxies
+AXES_IPWARE_META_PRECEDENCE_ORDER = [
+    "HTTP_X_REAL_IP",
+    "HTTP_X_FORWARDED_FOR",
+    "HTTP_FORWARDED_FOR",
+    "REMOTE_ADDR",
+]
 # https://django-axes.readthedocs.io/en/latest/2_installation.html#disabling-axes-system-checks
 SILENCED_SYSTEM_CHECKS = ["axes.W003"]
