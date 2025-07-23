@@ -10,30 +10,33 @@
       </a>
     </div>
     <div class="modal-body container">
-        <dl class="row">
-          <dt class="col-sm-3">Nome</dt>
-          <dd class="col-sm-9">{{ user.name|default:"-----" }}</dd>
-
-          <dt class="col-sm-3">Email</dt>
-          <dd class="col-sm-9">{{ user.email }}</dd>
-
-          <dt class="col-sm-3">Data de Criação</dt>
-          <dd class="col-sm-9">{{ user.date_joined }}</dd>
-
-          <dt class="col-sm-3">Último Login</dt>
-          <dd class="col-sm-9">{{ user.last_login }}</dd>
-
-          <dt class="col-sm-3">Ativo</dt>
-          <dd class="col-sm-9">
-            {% if user.is_active %}
-              <i class="bi bi-check-circle-fill text-success"></i>
-            {% else %}
-              <i class="bi bi-x-circle-fill text-danger"></i>
-            {% endif %}
-          </dd>
-
-          <dt class="col-sm-3">Permissões</dt>
-          <dd class="col-sm-9">
+      <dl class="row">
+        <dt class="col-sm-3">Nome</dt>
+        <dd class="col-sm-9">
+          {{ user.name|default:"-----" }}
+        </dd>
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">
+          {{ user.email }}
+        </dd>
+        <dt class="col-sm-3">Data de Criação</dt>
+        <dd class="col-sm-9">
+          {{ user.date_joined }}
+        </dd>
+        <dt class="col-sm-3">Último Login</dt>
+        <dd class="col-sm-9">
+          {{ user.last_login }}
+        </dd>
+        <dt class="col-sm-3">Ativo</dt>
+        <dd class="col-sm-9">
+          {% if user.is_active %}
+            <i class="bi bi-check-circle-fill text-success"></i>
+          {% else %}
+            <i class="bi bi-x-circle-fill text-danger"></i>
+          {% endif %}
+        </dd>
+        <dt class="col-sm-3">Permissões</dt>
+        <dd class="col-sm-9">
           {% with perms=user.get_user_permissions %}
             {% if perms %}
               {% for perm in user.get_user_permissions %}
@@ -43,14 +46,17 @@
               <span class="badge text-bg-secondary">Nenhuma permissão</span>
             {% endif %}
           {% endwith %}
-          </dd>
-
-          <dt class="col-sm-3">Órgão/Unidade</dt>
-          <dd class="col-sm-9">{{ user.department.name|default:"-----" }}</dd>
-        </dl>
+        </dd>
+        <dt class="col-sm-3">Órgão/Unidade</dt>
+        <dd class="col-sm-9">
+          {{ user.department.name|default:"-----" }}
+        </dd>
+      </dl>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">
+      <button type="button"
+              class="btn btn-secondary fw-bold"
+              data-bs-dismiss="modal">
         <i class="bi bi-x-lg"></i> Fechar
       </button>
     </div>
