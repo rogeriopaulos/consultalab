@@ -1,12 +1,25 @@
 from typing import ClassVar
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField
-from django.db.models import EmailField
+from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from .managers import UserManager
+
+
+class Department(models.Model):
+    name = models.CharField("Nome", blank=True, max_length=255)
+    abbreviation = models.CharField("Sigla", blank=True, max_length=50)
+    is_active = models.BooleanField("Ativo", default=True)
+
+    class Meta:
+        verbose_name = "Órgão/Unidade"
+        verbose_name_plural = "Órgãos/Unidades"
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return self.name or self.abbreviation or "Unidade sem nome"
 
 
 class User(AbstractUser):
@@ -17,11 +30,18 @@ class User(AbstractUser):
     """
 
     # First and last name do not cover name patterns around the globe
-    name = CharField(_("Name of User"), blank=True, max_length=255)
+    name = models.CharField(_("Name of User"), blank=True, max_length=255)
     first_name = None  # type: ignore[assignment]
     last_name = None  # type: ignore[assignment]
-    email = EmailField(_("email address"), unique=True)
+    email = models.EmailField(_("email address"), unique=True)
     username = None  # type: ignore[assignment]
+    department = models.ForeignKey(
+        Department,
+        verbose_name=_("Department"),
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="users",
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

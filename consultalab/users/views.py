@@ -19,6 +19,19 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 user_detail_view = UserDetailView.as_view()
 
 
+class UserDetailModalView(LoginRequiredMixin, DetailView):
+    model = User
+    slug_field = "id"
+    slug_url_kwarg = "id"
+    template_name = "audit/partials/user_detail.html"
+
+    def get_success_url(self) -> str:
+        return reverse("users:detail", kwargs={"id": self.object.id})
+
+
+user_detail_modal_view = UserDetailModalView.as_view()
+
+
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
     fields = ["name"]

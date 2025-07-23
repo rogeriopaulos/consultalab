@@ -24,58 +24,78 @@
   </thead>
   <tbody>
     {% for user in users %}
-      <tr>
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.date_joined }}</td>
-        <td>{{ user.last_login }}</td>
-        <td>
-          {% if user.is_active %}
-            <i class="bi bi-check-circle-fill text-success"></i>
-          {% else %}
-            <i class="bi bi-x-circle-fill text-danger"></i>
+    <tr>
+      <td>
+        <a href="#"
+           class="text-decoration-none"
+           hx-get="{% url 'users:detail_modal' user.id %}"
+           hx-target="#modals-detalhes"
+           hx-trigger="click"
+           data-bs-toggle="modal"
+           data-bs-target="#modals-detalhes">
+          {{ user.name }}
+        </a>
+      </td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.date_joined }}</td>
+      <td>{{ user.last_login }}</td>
+      <td>
+        {% if user.is_active %}
+          <i class="bi bi-check-circle-fill text-success"></i>
+        {% else %}
+          <i class="bi bi-x-circle-fill text-danger"></i>
+        {% endif %}
+      </td>
+      <td>
+        {% with perms=user.get_user_permissions %}
+          {% if perms %}
+            {% for perm in user.get_user_permissions %}
+              <span class="badge text-bg-{{ perm.badge_class }}">{{ perm.text }}</span>
+            {% endfor %}
           {% endif %}
-        </td>
-        <td>
-          {% with perms=user.get_user_permissions %}
-            {% if perms %}
-              {% for perm in user.get_user_permissions %}
-                <span class="badge text-bg-{{ perm.badge_class }}">{{ perm.text }}</span>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
-        </td>
-        <td>
-          <div class="dropdown">
-            <a href="#"
-               class="text-decoration-none text-secondary"
-               data-bs-toggle="dropdown"
-               aria-expanded="false">
-              <i class="bi bi-three-dots"></i>
-            </a>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <i class="bi bi-pen text-success me-2"></i>
-                  <small class="fw-light">Editar</small class="fw-light">
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item d-flex align-items-center" href="#">
-                    <i class="bi bi-x-circle text-danger me-2"></i>
-                    <small class="fw-light">Inativar</small class="fw-light">
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                      <i class="bi bi-list-nested text-info me-2"></i>
-                      <small class="fw-light">Permissões</small class="fw-light">
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        {% endwith %}
+      </td>
+      <td>
+        <div class="dropdown">
+          <a href="#"
+              class="text-decoration-none text-secondary"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+            <i class="bi bi-three-dots"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-pen text-success me-2"></i>
+                <small class="fw-light">Editar</small>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-x-circle text-danger me-2"></i>
+                <small class="fw-light">Inativar</small>
+                </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-list-nested text-info me-2"></i>
+                <small class="fw-light">Permissões</small>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Modal Detalhes -->
+<div id="modals-detalhes"
+     class="modal modal-blur fade"
+     aria-hidden="false"
+     tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
