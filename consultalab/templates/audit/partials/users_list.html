@@ -4,7 +4,12 @@
       <i class="bi bi-people-fill me-2"></i>
       Usuários
     </h5>
-    <button class="btn btn-sm btn-outline-primary cl-outline-primary">
+    <button class="btn btn-sm btn-outline-primary cl-outline-primary"
+            hx-get="{% url 'users:create' %}"
+            hx-target="#modals-create-user"
+            hx-trigger="click"
+            data-bs-toggle="modal"
+            data-bs-target="#modals-create-user">
       <i class="bi bi-plus-circle me-1"></i>
       Adicionar usuário
     </button>
@@ -36,7 +41,7 @@
         </td>
         <td>{{ user.email }}</td>
         <td>{{ user.date_joined }}</td>
-        <td>{{ user.last_login }}</td>
+        <td>{{ user.last_login|default:"" }}</td>
         <td>
           {% if user.is_active %}
             <i class="bi bi-check-circle-fill text-success"></i>
@@ -89,6 +94,16 @@
 </table>
 <!-- Modal Detalhes -->
 <div id="modals-detalhes"
+     class="modal modal-blur fade"
+     aria-hidden="false"
+     tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+       role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<!-- Modal Create User -->
+<div id="modals-create-user"
      class="modal modal-blur fade"
      aria-hidden="false"
      tabindex="-1">

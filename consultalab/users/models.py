@@ -42,6 +42,10 @@ class User(AbstractUser):
         on_delete=models.CASCADE,
         related_name="users",
     )
+    force_password_change = models.BooleanField(
+        "Forçar troca de senha no próximo login",
+        default=False,
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

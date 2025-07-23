@@ -1,9 +1,13 @@
 from allauth.account.forms import SignupForm
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
+from django.contrib.auth import forms
 from django.contrib.auth import forms as admin_forms
+from django.forms import CharField
 from django.forms import EmailField
+from django.forms import ModelChoiceField
 from django.utils.translation import gettext_lazy as _
 
+from .models import Department
 from .models import User
 
 
@@ -13,13 +17,15 @@ class UserAdminChangeForm(admin_forms.UserChangeForm):
         field_classes = {"email": EmailField}
 
 
-class UserAdminCreationForm(admin_forms.AdminUserCreationForm):  # type: ignore[name-defined]  # django-stubs is missing the class, thats why the error is thrown: typeddjango/django-stubs#2555
+# type: ignore[name-defined]  # django-stubs is missing the class, thats why the error is thrown: typeddjango/django-stubs#2555
+class UserAdminCreationForm(admin_forms.AdminUserCreationForm):
     """
     Form for User Creation in the Admin Area.
     To change user signup, see UserSignupForm and UserSocialSignupForm.
     """
 
-    class Meta(admin_forms.UserCreationForm.Meta):  # type: ignore[name-defined]
+    # type: ignore[name-defined]
+    class Meta(admin_forms.UserCreationForm.Meta):
         model = User
         fields = ("email",)
         field_classes = {"email": EmailField}
@@ -42,3 +48,32 @@ class UserSocialSignupForm(SocialSignupForm):
     Default fields will be added automatically.
     See UserSignupForm otherwise.
     """
+
+
+class UserCreationForm(forms.UserCreationForm):
+    name = CharField(max_length=255, required=True, label="Nome Completo", strip=True)
+    department = ModelChoiceField(
+        queryset=Department.objects.filter(is_active=True),
+        label="Órgão/Unidade",
+        required=True,
+        empty_label="Selecione um órgão/unidade",
+    )
+
+    class Meta:
+        model = User
+        fields = (
+            "name",
+            "email",
+            "department",
+            "password1",
+            "password2",
+            "force_password_change",
+            "user_permissions",
+        )
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exists():
+            msg = _("Este e-mail já está cadastrado.")
+            raise forms.ValidationError(msg)
+        return email

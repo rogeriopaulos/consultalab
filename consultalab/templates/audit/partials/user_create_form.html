@@ -1,0 +1,41 @@
+{% load crispy_forms_tags %}
+
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-content">
+    <div class="modal-header d-flex align-items-center justify-content-between">
+      <h5 class="modal-title">
+        <i class="bi bi-person-fill me-1 mt-1"></i> <span class="text-muted">Adicionar Usuário</span>
+      </h5>
+    </div>
+    <div class="modal-body container">
+      <form id="user-create-form"
+            hx-post="{% url 'users:create' %}"
+            hx-target="this"
+            hx-swap="innerHTML"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        {% if form.errors %}
+          <div class="alert alert-danger">
+            <strong>Por favor corrija os seguintes erros:</strong>
+            <ul>
+              {% for field, errors in form.errors.items %}<li>{{ errors|join:", " }}</li>{% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary fw-bold">
+            <i class="bi bi-person-fill"></i> Criar Usuário
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-outline-secondary fw-bold"
+              data-bs-dismiss="modal">
+        <i class="bi bi-x-lg"></i> Fechar
+      </button>
+    </div>
+  </div>
+</div>

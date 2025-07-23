@@ -39,3 +39,7 @@ table.cl-table {
   background-color: #013e64 !important;
   color: #fff !important;
 }
+
+#div_id_force_password_change > label {
+  color: #6c757d;
+}

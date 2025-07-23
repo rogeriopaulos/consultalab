@@ -1,12 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import QuerySet
+from django.shortcuts import render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
+from django.views.generic import View
 
+from consultalab.users.forms import UserCreationForm
 from consultalab.users.models import User
 
 
@@ -30,6 +34,36 @@ class UserDetailModalView(LoginRequiredMixin, DetailView):
 
 
 user_detail_modal_view = UserDetailModalView.as_view()
+
+
+class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "users.access_admin_section"
+
+    def get(self, request, *args, **kwargs):
+        form = UserCreationForm()
+        return render(
+            request,
+            "audit/partials/user_create_form.html",
+            {"form": form},
+        )
+
+    def post(self, request, *args, **kwargs):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            return render(
+                request,
+                "audit/partials/user_detail.html",
+                {"user": user},
+            )
+        return render(
+            request,
+            "audit/partials/user_create_form.html",
+            {"form": form},
+        )
+
+
+user_create_view = UserCreateView.as_view()
 
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
