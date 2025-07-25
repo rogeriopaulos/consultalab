@@ -43,3 +43,13 @@ table.cl-table {
 #div_id_force_password_change > label {
   color: #6c757d;
 }
+
+/* Container de mensagens HTMX */
+.htmx-messages-container {
+  position: relative;
+  z-index: 1050; /* Acima de outros elementos */
+}
+
+.htmx-messages-container .alert {
+  margin-bottom: 1rem;
+}

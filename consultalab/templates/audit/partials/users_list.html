@@ -15,7 +15,12 @@
     </button>
   </div>
 </div>
-<table class="table table-striped cl-table mt-3">
+<table class="table table-striped cl-table mt-3"
+       id="users-table"
+       hx-trigger="refreshUsers from:body"
+       hx-get="{% url 'audit:users' %}"
+       hx-target="#tab-content"
+       hx-swap="innerHTML">
   <thead>
     <tr>
       <th>Nome</th>

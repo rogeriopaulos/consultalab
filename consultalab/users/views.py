@@ -1,7 +1,11 @@
+import json
+
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import QuerySet
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -11,7 +15,8 @@ from django.views.generic import UpdateView
 from django.views.generic import View
 
 from consultalab.users.forms import UserCreationForm
-from consultalab.users.models import User
+
+User = get_user_model()
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -51,11 +56,23 @@ class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return render(
-                request,
-                "audit/partials/user_detail.html",
-                {"user": user},
+
+            # Criar trigger com mensagem de sucesso usando JSON
+            trigger_data = json.dumps(
+                {
+                    "closeModal": True,
+                    "refreshUsers": True,
+                    "showMessageCreatedUser": {
+                        "message": f'Usuário "{user.name}" foi criado com sucesso!',
+                        "type": "success",
+                    },
+                },
             )
+
+            response = HttpResponse("")
+            response["HX-Trigger"] = trigger_data
+            return response
+
         return render(
             request,
             "audit/partials/user_create_form.html",

@@ -9,6 +9,10 @@
   {{ block.super }}
   <link href="{% static 'css/admin_section.css' %}" rel="stylesheet" />
 {% endblock css %}
+{% block javascript %}
+  {{ block.super }}
+  <script defer src="{% static 'js/admin_section.js' %}"></script>
+{% endblock javascript %}
 {% block content %}
   <div class="row border border-2 rounded p-3 shadow bg-light mb-4 mt-3">
     <div class="col">

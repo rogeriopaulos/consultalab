@@ -1,6 +1,7 @@
 {% load crispy_forms_tags %}
 
-<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+     id="user-modal">
   <div class="modal-content">
     <div class="modal-header d-flex align-items-center justify-content-between">
       <h5 class="modal-title">
@@ -10,7 +11,7 @@
     <div class="modal-body container">
       <form id="user-create-form"
             hx-post="{% url 'users:create' %}"
-            hx-target="this"
+            hx-target="#user-modal"
             hx-swap="innerHTML"
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
         {% if form.errors %}
