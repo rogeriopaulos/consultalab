@@ -7,6 +7,8 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic import View
 
+from consultalab.users.filters import UserFilter
+
 User = get_user_model()
 
 
@@ -20,10 +22,11 @@ class UsersView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         users = User.objects.all().order_by("-date_joined")
+        user_filter = UserFilter(request.GET, queryset=users)
         return render(
             request,
             "audit/partials/users_list.html",
-            {"users": users},
+            {"users": user_filter.qs, "form": user_filter.form},
         )
 
 
