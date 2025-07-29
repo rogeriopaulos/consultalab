@@ -53,3 +53,7 @@ table.cl-table {
 .htmx-messages-container .alert {
   margin-bottom: 1rem;
 }
+
+i.bi-plus-circle-fill {
+  font-size: 1rem;
+}

@@ -96,3 +96,20 @@ class AccessLogsView(LoginRequiredMixin, PermissionRequiredMixin, View):
             "audit/partials/access_logs_list.html",
             {"access_logs": access_logs},
         )
+
+
+class LogEntryDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "users.access_admin_section"
+
+    def get(self, request, *args, **kwargs):
+        log_entry_id = kwargs.get("log_id")
+        log_entry = LogEntry.objects.filter(id=log_entry_id).first()
+
+        if not log_entry:
+            return render(request, "audit/partials/log_entry_not_found.html")
+
+        return render(
+            request,
+            "audit/partials/log_entry_detail.html",
+            {"log_entry": log_entry},
+        )
