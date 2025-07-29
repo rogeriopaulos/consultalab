@@ -51,7 +51,13 @@
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item d-flex align-items-center" href="#">
+                <a class="dropdown-item d-flex align-items-center"
+                   href="#"
+                   hx-get="{% url 'users:user_admin_section_update_view' user.id %}"
+                   hx-target="#modals-create-user"
+                   hx-trigger="click"
+                   data-bs-toggle="modal"
+                   data-bs-target="#modals-create-user">
                   <i class="bi bi-pen text-success me-2"></i>
                   <small class="fw-light">Editar</small>
                 </a>

@@ -63,6 +63,18 @@ document.body.addEventListener('showMessageCreatedUser', function (evt) {
   }
 });
 
+document.body.addEventListener('refreshUsers', function (evt) {
+  // Recarregar a lista de usuários fazendo uma nova requisição
+  const tabContent = document.getElementById('tab-content');
+  if (tabContent) {
+    // Fazer uma nova requisição para recarregar a lista de usuários
+    tab_content_url = tabContent.getAttribute('data-user-url');
+    htmx.ajax('GET', tab_content_url, {
+      target: '#tab-content'
+    });
+  }
+});
+
 // Verificar se HTMX está carregado e se os triggers estão funcionando
 document.addEventListener('DOMContentLoaded', function() {
 

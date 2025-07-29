@@ -49,7 +49,8 @@
            hx-get="{% url 'audit:users' %}"
            hx-trigger="load delay:100ms"
            hx-target="#tab-content"
-           hx-swap="innerHTML"></div>
+           hx-swap="innerHTML"
+           data-user-url="{% url 'audit:users' %}"></div>
       <div id="tab-content" role="tabpanel" class="tab-content p-4"></div>
     </div>
   </div>
