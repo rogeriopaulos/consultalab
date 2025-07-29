@@ -3,6 +3,7 @@ from axes.models import AccessLog
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic import TemplateView
@@ -20,11 +21,32 @@ class UsersView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = "users.access_admin_section"
 
     def get(self, request, *args, **kwargs):
-        users = User.objects.all().order_by("-date_joined")
+        search_term = request.GET.get("search", "")
+
+        if search_term:
+            users_list = User.objects.filter(
+                Q(name__icontains=search_term) | Q(email__icontains=search_term),
+            ).order_by("-date_joined")
+        else:
+            users_list = User.objects.all().order_by("-date_joined")
+
+        paginator = Paginator(users_list, 10)  # 10 usuários por página
+        page_number = request.GET.get("page")
+        users = paginator.get_page(page_number)
+
+        # Se há um termo de busca, retorna apenas a tabela com paginação
+        if search_term and request.headers.get("HX-Request"):
+            return render(
+                request,
+                "audit/partials/includes/users_table_with_pagination.html",
+                {"users": users, "search_term": search_term},
+            )
+
+        # Caso contrário, retorna a página completa
         return render(
             request,
             "audit/partials/users_list.html",
-            {"users": users},
+            {"users": users, "search_term": search_term},
         )
 
 
@@ -32,15 +54,23 @@ class UsersSearchView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = "users.access_admin_section"
 
     def post(self, request, *args, **kwargs):
-        data = request.POST
-        users = User.objects.filter(
-            Q(name__icontains=data.get("search", ""))
-            | Q(email__icontains=data.get("search", "")),
-        ).order_by("-date_joined")
+        search_term = request.POST.get("search", "").strip()
+
+        if search_term:
+            users_list = User.objects.filter(
+                Q(name__icontains=search_term) | Q(email__icontains=search_term),
+            ).order_by("-date_joined")
+        else:
+            users_list = User.objects.all().order_by("-date_joined")
+
+        paginator = Paginator(users_list, 10)  # 10 usuários por página
+        page_number = request.GET.get("page", 1)
+        users = paginator.get_page(page_number)
+
         return render(
             request,
-            "audit/partials/includes/users_table.html",
-            {"users": users},
+            "audit/partials/includes/users_table_with_pagination.html",
+            {"users": users, "search_term": search_term},
         )
 
 

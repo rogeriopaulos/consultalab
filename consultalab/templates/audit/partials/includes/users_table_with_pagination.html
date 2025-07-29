@@ -1,0 +1,4 @@
+{% include "audit/partials/includes/users_table.html" %}
+{% if users.has_other_pages %}
+  {% include "audit/partials/includes/pagination.html" with hx_target="users-table-container" %}
+{% endif %}

@@ -20,15 +20,21 @@
     <input class="form-control mt-2"
            type="search"
            name="search"
+           value="{{ search_term|default:'' }}"
            placeholder="Nome ou e-mail do usuário"
            hx-post="{% url 'audit:users_search' %}"
            hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
-           hx-target="#users-table"
+           hx-target="#users-table-container"
            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' />
   </div>
 </div>
 <div class="row">
-  <div class="col-md table-responsive">{% include "audit/partials/includes/users_table.html" %}</div>
+  <div class="col-md table-responsive" id="users-table-container">
+    {% include "audit/partials/includes/users_table.html" %}
+    {% if users.has_other_pages %}
+      {% include "audit/partials/includes/pagination.html" with hx_target="tab-content" %}
+    {% endif %}
+  </div>
 </div>
 <!-- Modal Detalhes -->
 <div id="modals-detalhes"
