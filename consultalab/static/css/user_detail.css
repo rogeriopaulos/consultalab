@@ -1,0 +1,48 @@
+#notifications-table_wrapper > div.dataTables_filter {
+  margin-top: -30px;
+}
+
+table#notifications-table > thead > tr.datatable-column-filter-row th:nth-child(3) {
+  text-align: center;
+}
+
+#contentViewModal {
+  display: none;
+}
+
+@media (max-width: 575.98px) {
+  button.sw-navItem,
+  #userDetailTabContent {
+    font-size: 0.8rem;
+  }
+  button.sw-navItem {
+    padding: 0.25rem 0.5rem;
+  }
+  .form-group > button {
+    margin-bottom: 4px;
+  }
+  #notifications-table_wrapper > div.dataTables_filter {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  #notifications-table_info {
+    margin-bottom: 32px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  #notifications-table_info {
+    margin-bottom: 32px;
+  }
+
+  .daterange {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  button#sw-editWpBtn {
+    font-size: 12px;
+  }
+}

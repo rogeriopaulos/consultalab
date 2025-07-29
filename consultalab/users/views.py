@@ -1,9 +1,13 @@
 import json
 
+from allauth.account.forms import AddEmailForm
+from allauth.account.forms import ChangePasswordForm
+from allauth.account.views import PasswordChangeView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import QuerySet
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -24,6 +28,17 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     slug_field = "id"
     slug_url_kwarg = "id"
+
+    def get_object(self, queryset=None):
+        if self.request.user.id != self.kwargs["pk"]:
+            raise PermissionDenied
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["email_form"] = AddEmailForm()
+        context["password_change_form"] = ChangePasswordForm()
+        return context
 
 
 user_detail_view = UserDetailView.as_view()
@@ -154,3 +169,16 @@ class UserAdminSectionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Vi
 
 
 user_admin_section_update_view = UserAdminSectionUpdateView.as_view()
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = "users/user_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["object"] = self.request.user
+        context["password_change_form"] = context["form"]
+        return context
+
+    def get_success_url(self):
+        return reverse("users:detail", kwargs={"pk": self.request.user.pk})

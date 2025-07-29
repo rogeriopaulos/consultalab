@@ -1,0 +1,67 @@
+.nav-pills {
+  --bs-nav-pills-link-active-color: #fff;
+  --bs-nav-pills-link-active-bg: #212529;
+}
+
+button#sw-editNameBtn {
+  --bs-btn-padding-y: 0.25rem;
+  --bs-btn-padding-x: 0.5rem;
+  --bs-btn-font-size: 0.75rem;
+}
+
+li:has(> .nav-link.active.sw-navItem) {
+  border-bottom: 2px solid #212529;
+}
+
+.nav-link.active.sw-navItem {
+  background-color: transparent !important;
+  color: black !important;
+}
+
+[data-bs-theme="dark"] .nav-link.active.sw-navItem {
+  color: #fff !important;
+}
+
+[data-bs-theme="dark"] li:has(> .nav-link.active.sw-navItem) {
+  border-bottom: 2px solid #fff;
+}
+
+div.alert-error {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+#id_password_change_form {
+  font-size: 0.875rem;
+}
+
+#notifications-table_wrapper > div.dt-search {
+  margin-top: -31px;
+  margin-bottom: 8px;
+}
+
+div#notifications-table_wrapper,
+table#notifications-table,
+a.page-link {
+  font-size: 14px;
+}
+
+[data-bs-theme="dark"] table#notifications-table {
+  color: var(--bs-primary-text-emphasis);
+  background-color: var(--bs-light-bg-subtle);
+}
+
+.active > .page-link {
+  color: white;
+  background-color: black;
+  border: black;
+}
+
+table#notifications-table td:nth-child(3) {
+  text-align: center;
+}
+
+.sw-smallText {
+  font-size: 0.75rem;
+}
