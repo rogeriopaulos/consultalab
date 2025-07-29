@@ -2,6 +2,7 @@ from allauth.account.forms import SignupForm
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django.contrib.auth import forms
 from django.contrib.auth import forms as admin_forms
+from django.contrib.auth.models import Permission
 from django.forms import CharField
 from django.forms import EmailField
 from django.forms import ModelChoiceField
@@ -18,7 +19,8 @@ class UserAdminChangeForm(admin_forms.UserChangeForm):
         field_classes = {"email": EmailField}
 
 
-# type: ignore[name-defined]  # django-stubs is missing the class, thats why the error is thrown: typeddjango/django-stubs#2555
+# type: ignore[name-defined]  # django-stubs is missing the class,
+# thats why the error is thrown: typeddjango/django-stubs#2555
 class UserAdminCreationForm(admin_forms.AdminUserCreationForm):
     """
     Form for User Creation in the Admin Area.
@@ -77,6 +79,19 @@ class UserCreationForm(forms.UserCreationForm):
             "user_permissions",
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtrar apenas as permissões específicas do usuário
+        allowed_permissions = [
+            "users.access_admin_section",
+            "users.can_request_pix",
+            "users.can_request_ccs",
+        ]
+        self.fields["user_permissions"].queryset = Permission.objects.filter(
+            content_type__app_label="users",
+            codename__in=[perm.split(".")[1] for perm in allowed_permissions],
+        )
+
     def clean_email(self):
         email = self.cleaned_data.get("email")
         if User.objects.filter(email=email).exists():
@@ -94,6 +109,19 @@ class UserUpdateForm(ModelForm):
             "department",
             "force_password_change",
             "user_permissions",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtrar apenas as permissões específicas do usuário
+        allowed_permissions = [
+            "users.access_admin_section",
+            "users.can_request_pix",
+            "users.can_request_ccs",
+        ]
+        self.fields["user_permissions"].queryset = Permission.objects.filter(
+            content_type__app_label="users",
+            codename__in=[perm.split(".")[1] for perm in allowed_permissions],
         )
 
     def clean_email(self):
