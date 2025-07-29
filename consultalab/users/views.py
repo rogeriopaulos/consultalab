@@ -15,6 +15,7 @@ from django.views.generic import UpdateView
 from django.views.generic import View
 
 from consultalab.users.forms import UserCreationForm
+from consultalab.users.forms import UserUpdateForm
 
 User = get_user_model()
 
@@ -48,7 +49,7 @@ class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         form = UserCreationForm()
         return render(
             request,
-            "audit/partials/user_create_form.html",
+            "audit/partials/user_form.html",
             {"form": form},
         )
 
@@ -75,7 +76,7 @@ class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         return render(
             request,
-            "audit/partials/user_create_form.html",
+            "audit/partials/user_form.html",
             {"form": form},
         )
 
@@ -108,3 +109,48 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 user_redirect_view = UserRedirectView.as_view()
+
+
+class UserAdminSectionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "users.access_admin_section"
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(id=kwargs.get("id"))
+        if not user:
+            return HttpResponse(status=404)
+        form = UserUpdateForm(instance=user)
+        return render(
+            request,
+            "audit/partials/user_form.html",
+            {"form": form, "update_form": True},
+        )
+
+    def post(self, request, *args, **kwargs):
+        user = User.objects.get(id=kwargs.get("id"))
+        if not user:
+            return HttpResponse(status=404)
+        form = UserUpdateForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            trigger_data = json.dumps(
+                {
+                    "closeModal": True,
+                    "refreshUsers": True,
+                    "showMessageCreatedUser": {
+                        "message": f'Usuário "{user.name}" foi atualizado com sucesso!',
+                        "type": "success",
+                    },
+                },
+            )
+
+            response = HttpResponse("")
+            response["HX-Trigger"] = trigger_data
+            return response
+        return render(
+            request,
+            "audit/partials/user_form.html",
+            {"form": form, "update_form": True},
+        )
+
+
+user_admin_section_update_view = UserAdminSectionUpdateView.as_view()

@@ -9,7 +9,6 @@ document.body.addEventListener('closeModal', function (evt) {
 });
 
 document.body.addEventListener('showMessageCreatedUser', function (evt) {
-
   const data = evt.detail;
   if (data && data.message) {
 

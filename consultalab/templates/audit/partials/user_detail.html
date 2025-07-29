@@ -4,7 +4,14 @@
       <h5 class="modal-title">
         <i class="bi bi-person-fill me-1 mt-1"></i> <span class="text-muted">{{ user.name }}</span>
       </h5>
-      <a class="btn btn-sm btn-info" role="button" href="#">
+      <a class="btn btn-sm btn-info"
+         role="button"
+         href="#"
+         hx-get="{% url 'users:user_admin_section_update_view' user.id %}"
+         hx-target="#modals-create-user"
+         hx-trigger="click"
+         data-bs-toggle="modal"
+         data-bs-target="#modals-create-user">
         <i class="bi bi-pen text-success me-2 text-black"></i>
         <span class="fw-bold">Editar</span>
       </a>

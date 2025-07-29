@@ -5,6 +5,7 @@ from django.contrib.auth import forms as admin_forms
 from django.forms import CharField
 from django.forms import EmailField
 from django.forms import ModelChoiceField
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
 from .models import Department
@@ -51,7 +52,12 @@ class UserSocialSignupForm(SocialSignupForm):
 
 
 class UserCreationForm(forms.UserCreationForm):
-    name = CharField(max_length=255, required=True, label="Nome Completo", strip=True)
+    name = CharField(
+        max_length=255,
+        required=True,
+        label="Nome Completo",
+        strip=True,
+    )
     department = ModelChoiceField(
         queryset=Department.objects.filter(is_active=True),
         label="Órgão/Unidade",
@@ -74,6 +80,25 @@ class UserCreationForm(forms.UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get("email")
         if User.objects.filter(email=email).exists():
+            msg = _("Este e-mail já está cadastrado.")
+            raise forms.ValidationError(msg)
+        return email
+
+
+class UserUpdateForm(ModelForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = (
+            "name",
+            "email",
+            "department",
+            "force_password_change",
+            "user_permissions",
+        )
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exclude(id=self.instance.id).exists():
             msg = _("Este e-mail já está cadastrado.")
             raise forms.ValidationError(msg)
         return email

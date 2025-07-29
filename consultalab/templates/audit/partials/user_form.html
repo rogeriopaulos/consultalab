@@ -10,7 +10,7 @@
     </div>
     <div class="modal-body container">
       <form id="user-create-form"
-            hx-post="{% url 'users:create' %}"
+            hx-post="{% if update_form %}{% url 'users:user_admin_section_update_view' form.instance.id %}{% else %}{% url 'users:create' %}{% endif %}"
             hx-target="#user-modal"
             hx-swap="innerHTML"
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
@@ -25,7 +25,12 @@
         {{ form|crispy }}
         <div class="d-grid">
           <button type="submit" class="btn btn-primary fw-bold">
-            <i class="bi bi-person-fill"></i> Criar Usuário
+            <i class="bi bi-person-fill"></i>
+            {% if update_form %}
+              Atualizar Usuário
+            {% else %}
+              Criar Usuário
+            {% endif %}
           </button>
         </div>
       </form>
