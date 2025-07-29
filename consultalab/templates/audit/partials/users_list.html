@@ -1,5 +1,3 @@
-{% load crispy_forms_tags %}
-
 <div class="row border-bottom border-secondary border-opacity-10">
   <div class="col d-flex justify-content-between align-items-center mb-3">
     <h5 class="text-secondary">
@@ -17,101 +15,20 @@
     </button>
   </div>
 </div>
-<div class="row" id="form-filters">
-  <div class="col-md-2 mt-4">
-    <form method="get" class="form-inline" id="users-filter-form">
-      {{ form|crispy }}
-      <button type="submit"
-              class="btn btn-sm btn-outline-primary"
-              id="filter-button">
-        <i class="bi bi-filter"></i> Filtrar
-      </button>
-    </form>
+<div class="row">
+  <div class="col">
+    <input class="form-control mt-2"
+           type="search"
+           name="search"
+           placeholder="Nome ou e-mail do usuário"
+           hx-post="{% url 'audit:users_search' %}"
+           hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
+           hx-target="#users-table"
+           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' />
   </div>
-  <div class="col-md-10 table-responsive">
-    <table class="table table-striped cl-table mt-3"
-           id="users-table"
-           hx-trigger="refreshUsers from:body"
-           hx-get="{% url 'audit:users' %}"
-           hx-target="#tab-content"
-           hx-swap="innerHTML">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>E-mail</th>
-          <th>Registrado em</th>
-          <th>Último login</th>
-          <th>Ativo</th>
-          <th>Permissões</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for user in users %}
-          <tr>
-            <td>
-              <a href="#"
-                 class="text-decoration-none"
-                 hx-get="{% url 'users:detail_modal' user.id %}"
-                 hx-target="#modals-detalhes"
-                 hx-trigger="click"
-                 data-bs-toggle="modal"
-                 data-bs-target="#modals-detalhes">{{ user.name }}</a>
-            </td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.date_joined }}</td>
-            <td>{{ user.last_login|default:"" }}</td>
-            <td>
-              {% if user.is_active %}
-                <i class="bi bi-check-circle-fill text-success"></i>
-              {% else %}
-                <i class="bi bi-x-circle-fill text-danger"></i>
-              {% endif %}
-            </td>
-            <td>
-              {% with perms=user.get_user_permissions %}
-                {% if perms %}
-                  {% for perm in user.get_user_permissions %}
-                    <span class="badge text-bg-{{ perm.badge_class }}">{{ perm.text }}</span>
-                  {% endfor %}
-                {% endif %}
-              {% endwith %}
-            </td>
-            <td>
-              <div class="dropdown">
-                <a href="#"
-                   class="text-decoration-none text-secondary"
-                   data-bs-toggle="dropdown"
-                   aria-expanded="false">
-                  <i class="bi bi-three-dots"></i>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                      <i class="bi bi-pen text-success me-2"></i>
-                      <small class="fw-light">Editar</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                      <i class="bi bi-x-circle text-danger me-2"></i>
-                      <small class="fw-light">Inativar</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                      <i class="bi bi-list-nested text-info me-2"></i>
-                      <small class="fw-light">Permissões</small>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+</div>
+<div class="row">
+  <div class="col-md table-responsive">{% include "audit/partials/includes/users_table.html" %}</div>
 </div>
 <!-- Modal Detalhes -->
 <div id="modals-detalhes"
