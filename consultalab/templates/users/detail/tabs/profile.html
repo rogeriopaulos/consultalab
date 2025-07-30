@@ -8,7 +8,7 @@
       <i class="fa-solid fa-signature"></i> Nome completo:
     </div>
     <div class="col fw-light">
-      {{ object.name }}
+      {{ user.name }}
       <button type="button"
               class="btn btn-sm"
               id="sw-editNameBtn"
@@ -27,32 +27,32 @@
     <div class="col-4 fw-bold text-secondary">
       <i class="fa-solid fa-keyboard"></i> Nome de usuário:
     </div>
-    <div class="col fw-light">{{ object.email|default:"-----" }}</div>
+    <div class="col fw-light">{{ user.email|default:"-----" }}</div>
   </div>
   <div class="row mt-3">
     <div class="col-4 fw-bold text-secondary">
       <i class="fa-regular fa-calendar"></i> Cadastrado em:
     </div>
-    <div class="col fw-light">{{ object.date_joined }}</div>
+    <div class="col fw-light">{{ user.date_joined }}</div>
   </div>
   <div class="row mt-3">
     <div class="col-4 fw-bold text-secondary">
-      <i class="fa-solid fa-building"></i> Departamento:
+      <i class="fa-solid fa-building"></i> Lotação:
     </div>
-    <div class="col fw-light">{{ object.department.name }}</div>
+    <div class="col fw-light">{{ user.department.name }}</div>
   </div>
   <div class="row mt-3">
     <div class="col-4 fw-bold text-secondary">
       <i class="fa-solid fa-right-to-bracket"></i> Último acesso:
     </div>
-    <div class="col fw-light">{{ object.last_login|default:"-----" }}</div>
+    <div class="col fw-light">{{ user.last_login|default:"-----" }}</div>
   </div>
   <div class="row mt-3">
     <div class="col-4 fw-bold text-secondary">
       <i class="fa-solid fa-user-group"></i> Permissões:
     </div>
     <div class="col fw-light">
-      {% for perm in object.user_permissions.all %}
+      {% for perm in user.user_permissions.all %}
         <span class="badge bg-{% cycle 'primary' 'success' 'warning' 'dark' %} bg-gradient text-white">{{ perm.codename }}</span>
       {% empty %}
         -----

@@ -2,7 +2,6 @@ import json
 
 from allauth.account.forms import AddEmailForm
 from allauth.account.forms import ChangePasswordForm
-from allauth.account.views import PasswordChangeView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -33,12 +32,6 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         if self.request.user.id != self.kwargs["pk"]:
             raise PermissionDenied
         return self.request.user
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["email_form"] = AddEmailForm()
-        context["password_change_form"] = ChangePasswordForm()
-        return context
 
 
 user_detail_view = UserDetailView.as_view()
@@ -171,14 +164,40 @@ class UserAdminSectionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Vi
 user_admin_section_update_view = UserAdminSectionUpdateView.as_view()
 
 
-class CustomPasswordChangeView(PasswordChangeView):
-    template_name = "users/user_detail.html"
+class UserProfileView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if not user:
+            return HttpResponse(status=404)
+        return render(
+            request,
+            "users/detail/tabs/profile.html",
+            {"user": user},
+        )
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["object"] = self.request.user
-        context["password_change_form"] = context["form"]
-        return context
 
-    def get_success_url(self):
-        return reverse("users:detail", kwargs={"pk": self.request.user.pk})
+user_profile_view = UserProfileView.as_view()
+
+
+class UserEmailView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return render(
+            request,
+            "users/detail/tabs/email.html",
+            {"email_form": AddEmailForm(user=request.user)},
+        )
+
+
+user_email_view = UserEmailView.as_view()
+
+
+class UserSecurityView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return render(
+            request,
+            "users/detail/tabs/security.html",
+            {"password_change_form": ChangePasswordForm()},
+        )
+
+
+user_security_view = UserSecurityView.as_view()

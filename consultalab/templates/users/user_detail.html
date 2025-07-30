@@ -19,20 +19,20 @@
         </h5>
         <div class="tab-list">
           <nav class="nav nav-pills flex-column flex-sm-row" role="tablist">
-            <a hx-get=""
+            <a hx-get="{% url 'users:profile' %}"
                hx-target="#tab-content"
                hx-trigger="click"
                class="flex-sm-fill text-sm-center nav-link active cl-nav-link"
                data-bs-toggle="pill"
                aria-current="page"
                href="#">Perfil</a>
-            <a hx-get=""
+            <a hx-get="{% url 'users:email_tab' %}"
                hx-target="#tab-content"
                hx-trigger="click"
                class="flex-sm-fill text-sm-center nav-link cl-nav-link"
                data-bs-toggle="pill"
                href="#">E-mail</a>
-            <a hx-get=""
+            <a hx-get="{% url 'users:security_tab' %}"
                hx-target="#tab-content"
                hx-trigger="click"
                class="flex-sm-fill text-sm-center nav-link cl-nav-link"
@@ -41,33 +41,11 @@
           </nav>
         </div>
         <div id="tabs"
-             hx-get=""
+             hx-get="{% url 'users:profile' %}"
              hx-trigger="load delay:100ms"
              hx-target="#tab-content"
              hx-swap="innerHTML"></div>
         <div id="tab-content" role="tabpanel" class="tab-content p-4"></div>
-        {% comment %} <ul class="nav nav-pills" id="userDetailTab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active sw-navItem" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="true">
-              <i class="fa-solid fa-id-card fa-xs"></i> Perfil
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link sw-navItem" id="email-tab" data-bs-toggle="tab" data-bs-target="#email-tab-pane" type="button" role="tab" aria-controls="email-tab-pane" aria-selected="false">
-              <i class="fa-solid fa-envelope fa-xs"></i> E-mail
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link sw-navItem" id="security-tab" data-bs-toggle="tab" data-bs-target="#security-tab-pane" type="button" role="tab" aria-controls="security-tab-pane" aria-selected="false">
-              <i class="fa-solid fa-lock fa-xs"></i> Segurança
-            </button>
-          </li>
-        </ul>
-        <div class="tab-content" id="userDetailTabContent">
-          {% include "users/detail/tabs/profile.html" %}
-          {% include "users/detail/tabs/email.html" %}
-          {% include "users/detail/tabs/security.html" %}
-        </div> {% endcomment %}
       </div>
     </div>
   </div>

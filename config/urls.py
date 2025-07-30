@@ -6,19 +6,12 @@ from django.urls import include
 from django.urls import path
 from django.views import defaults as default_views
 
-from consultalab.users.views import CustomPasswordChangeView
-
 urlpatterns = [
     path("", include("consultalab.core.urls", namespace="core")),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("usuarios/", include("consultalab.users.urls", namespace="users")),
-    path(
-        "conta/password/change/",
-        CustomPasswordChangeView.as_view(),
-        name="account_change_password",
-    ),
     path("contas/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     path("bacen/", include("consultalab.bacen.urls", namespace="bacen")),
