@@ -107,7 +107,6 @@ class UserUpdateForm(ModelForm):
             "name",
             "email",
             "department",
-            "force_password_change",
             "user_permissions",
         )
 
