@@ -1,3 +1,45 @@
+<!-- Formulário de filtros -->
+<div class="mb-4">
+  <form hx-post="{% url 'audit:access_logs_search' %}"
+        hx-target="#tab-content"
+        hx-swap="innerHTML"
+        class="row g-3">
+    {% csrf_token %}
+    <div class="col-md-4">
+      <label for="username" class="form-label">Usuário</label>
+      <input type="text"
+             class="form-control"
+             id="username"
+             name="username"
+             placeholder="Digite o nome de usuário"
+             value="{{ username_search|default:'' }}" />
+    </div>
+    <div class="col-md-3">
+      <label for="date_from" class="form-label">Data inicial</label>
+      <input type="date"
+             class="form-control"
+             id="date_from"
+             name="date_from"
+             value="{{ date_from|default:'' }}" />
+    </div>
+    <div class="col-md-3">
+      <label for="date_to" class="form-label">Data final</label>
+      <input type="date"
+             class="form-control"
+             id="date_to"
+             name="date_to"
+             value="{{ date_to|default:'' }}" />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+      <a href="#"
+         hx-get="{% url 'audit:access_logs' %}"
+         hx-target="#tab-content"
+         hx-swap="innerHTML"
+         class="btn btn-outline-secondary">Limpar</a>
+    </div>
+  </form>
+</div>
 <table class="table table-striped cl-table">
   <thead>
     <tr>

@@ -211,23 +211,6 @@ class LogEntriesSearchView(LoginRequiredMixin, PermissionRequiredMixin, View):
         )
 
 
-class AccessLogsView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = "users.access_admin_section"
-
-    def get(self, request, *args, **kwargs):
-        access_logs_list = AccessLog.objects.all().order_by("-attempt_time")
-
-        paginator = Paginator(access_logs_list, 10)  # 10 entradas por página
-        page_number = request.GET.get("page")
-        access_logs = paginator.get_page(page_number)
-
-        return render(
-            request,
-            "audit/partials/access_logs_list.html",
-            {"access_logs": access_logs},
-        )
-
-
 class LogEntryDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = "users.access_admin_section"
 
@@ -242,4 +225,141 @@ class LogEntryDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
             request,
             "audit/partials/log_entry_detail.html",
             {"log_entry": log_entry},
+        )
+
+
+class AccessLogsView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "users.access_admin_section"
+
+    def get(self, request, *args, **kwargs):
+        # Obter parâmetros de filtro
+        username_search = request.GET.get("username", "").strip()
+        date_from = request.GET.get("date_from", "").strip()
+        date_to = request.GET.get("date_to", "").strip()
+
+        # Começar com todos os logs de acesso
+        access_logs_list = AccessLog.objects.all()
+
+        # Filtrar por usuário (username)
+        if username_search:
+            access_logs_list = access_logs_list.filter(
+                username__icontains=username_search,
+            )
+
+        # Filtrar por período de data
+        if date_from:
+            try:
+                from django.utils.dateparse import parse_date
+
+                parsed_date_from = parse_date(date_from)
+                if parsed_date_from:
+                    access_logs_list = access_logs_list.filter(
+                        attempt_time__date__gte=parsed_date_from,
+                    )
+            except ValueError:
+                pass
+
+        if date_to:
+            try:
+                from django.utils.dateparse import parse_date
+
+                parsed_date_to = parse_date(date_to)
+                if parsed_date_to:
+                    access_logs_list = access_logs_list.filter(
+                        attempt_time__date__lte=parsed_date_to,
+                    )
+            except ValueError:
+                pass
+
+        access_logs_list = access_logs_list.order_by("-attempt_time")
+
+        paginator = Paginator(access_logs_list, 10)  # 10 entradas por página
+        page_number = request.GET.get("page")
+        access_logs = paginator.get_page(page_number)
+
+        # Se há filtros aplicados e é uma requisição HTMX, retorna apenas a tabela
+        if (username_search or date_from or date_to) and request.headers.get(
+            "HX-Request",
+        ):
+            return render(
+                request,
+                "audit/partials/includes/access_logs_table_with_pagination.html",
+                {
+                    "access_logs": access_logs,
+                    "username_search": username_search,
+                    "date_from": date_from,
+                    "date_to": date_to,
+                },
+            )
+
+        return render(
+            request,
+            "audit/partials/access_logs_list.html",
+            {
+                "access_logs": access_logs,
+                "username_search": username_search,
+                "date_from": date_from,
+                "date_to": date_to,
+            },
+        )
+
+
+class AccessLogsSearchView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "users.access_admin_section"
+
+    def post(self, request, *args, **kwargs):
+        # Obter parâmetros de filtro
+        username_search = request.POST.get("username", "").strip()
+        date_from = request.POST.get("date_from", "").strip()
+        date_to = request.POST.get("date_to", "").strip()
+
+        # Começar com todos os logs de acesso
+        access_logs_list = AccessLog.objects.all()
+
+        # Filtrar por usuário (username)
+        if username_search:
+            access_logs_list = access_logs_list.filter(
+                username__icontains=username_search,
+            )
+
+        # Filtrar por período de data
+        if date_from:
+            try:
+                from django.utils.dateparse import parse_date
+
+                parsed_date_from = parse_date(date_from)
+                if parsed_date_from:
+                    access_logs_list = access_logs_list.filter(
+                        attempt_time__date__gte=parsed_date_from,
+                    )
+            except ValueError:
+                pass
+
+        if date_to:
+            try:
+                from django.utils.dateparse import parse_date
+
+                parsed_date_to = parse_date(date_to)
+                if parsed_date_to:
+                    access_logs_list = access_logs_list.filter(
+                        attempt_time__date__lte=parsed_date_to,
+                    )
+            except ValueError:
+                pass
+
+        access_logs_list = access_logs_list.order_by("-attempt_time")
+
+        paginator = Paginator(access_logs_list, 10)  # 10 entradas por página
+        page_number = request.GET.get("page", 1)
+        access_logs = paginator.get_page(page_number)
+
+        return render(
+            request,
+            "audit/partials/includes/access_logs_table_with_pagination.html",
+            {
+                "access_logs": access_logs,
+                "username_search": username_search,
+                "date_from": date_from,
+                "date_to": date_to,
+            },
         )
