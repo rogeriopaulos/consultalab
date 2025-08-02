@@ -51,7 +51,21 @@ class RequisicaoBacenCreateView(LoginRequiredMixin, CreateView):
     page_size = LIST_PAGE_SIZE
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        user = self.request.user
+        form.instance.user = user
+
+        if form.instance.tipo_requisicao in ["1", "2"] and not user.has_perm(
+            "users.can_request_pix",
+        ):
+            form.add_error(None, "Usuário não autorizado a realizar requisições Pix.")
+            return self.form_invalid(form)
+
+        if form.instance.tipo_requisicao == "3" and not user.has_perm(
+            "users.can_request_ccs",
+        ):
+            form.add_error(None, "Usuário não autorizado a realizar requisições CCS.")
+            return self.form_invalid(form)
+
         return super().form_valid(form)
 
     def form_invalid(self, form):

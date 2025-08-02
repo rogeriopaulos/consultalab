@@ -6,73 +6,89 @@
   Home
 {% endblock title %}
 {% block content %}
-  <div class="row row-cols-1 row-cols-md-2 g-4 mt-3 d-flex justify-content-center">
-    <div class="col text-center">
-      <div class="border border-2 rounded p-3 shadow bg-light">
-        <div class="row">
-          <div class="col">
-            <img src="{% static 'images/pix_logo_icon.webp' %}"
-                 alt="Logo Pix"
-                 width="30"
-                 class="me-2" />
-            <span class="fw-bold">Consulta Pix</span>
+  {% if 'users.can_request_pix' in perms or 'users.can_request_ccs' in perms %}
+    <div class="row row-cols-1 row-cols-md-2 g-4 mt-3 d-flex justify-content-center">
+      {% if 'users.can_request_pix' in perms %}
+        <div class="col text-center">
+          <div class="border border-2 rounded p-3 shadow bg-light">
+            <div class="row">
+              <div class="col">
+                <img src="{% static 'images/pix_logo_icon.webp' %}"
+                     alt="Logo Pix"
+                     width="30"
+                     class="me-2" />
+                <span class="fw-bold">Consulta Pix</span>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col">
+                <button class="btn btn-dark me-2 w-25 fw-bold"
+                        hx-get="{% url 'bacen:cpf_cnpj' %}"
+                        hx-target="#modals-consulta"
+                        hx-trigger="click"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modals-consulta">CPF/CNPJ</button>
+                <button class="btn btn-secondary me-2 w-25 fw-bold"
+                        hx-get="{% url 'bacen:chave' %}"
+                        hx-target="#modals-consulta"
+                        hx-trigger="click"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modals-consulta">Chave</button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="row mt-3">
-          <div class="col">
-            <button class="btn btn-dark me-2 w-25 fw-bold"
-                    hx-get="{% url 'bacen:cpf_cnpj' %}"
-                    hx-target="#modals-consulta"
-                    hx-trigger="click"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modals-consulta">CPF/CNPJ</button>
-            <button class="btn btn-secondary me-2 w-25 fw-bold"
-                    hx-get="{% url 'bacen:chave' %}"
-                    hx-target="#modals-consulta"
-                    hx-trigger="click"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modals-consulta">Chave</button>
+      {% endif %}
+      {% if 'users.can_request_ccs' in perms %}
+        <div class="col text-center"
+             data-bs-toggle="tooltip"
+             data-bs-title="Em breve a consulta CCS estará disponível!">
+          <div class="border border-2 rounded p-3 shadow bg-light">
+            <div class="row">
+              <div class="col">
+                <img src="{% static 'images/img_card_ccs.png' %}"
+                     alt="Logo CCS"
+                     width="30"
+                     class="me-2" />
+                <span class="fw-bold">Consulta CCS</span>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col">
+                <button class="btn btn-outline-dark me-2 w-25 fw-bold"
+                        hx-get="{% url 'bacen:chave' %}"
+                        hx-target="#modals-consulta"
+                        hx-trigger="click"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modals-consulta"
+                        disabled>CPF/CNPJ</button>
+              </div>
+            </div>
           </div>
         </div>
+      {% endif %}
+    </div>
+    <div class="row mt-4">
+      <div class="col">
+        <p class="text-secondary fw-light">
+          <i class="bi bi-info-circle-fill"></i>
+          Adicione uma consulta clicando no botão "CPF/CNPJ" ou "Chave" acima.
+          Você pode consultar CPF, CNPJ ou Chaves Pix.
+          As consultas são processadas em segundo plano e você pode acompanhar o status delas na tabela abaixo.
+        </p>
       </div>
     </div>
-    <div class="col text-center"
-         data-bs-toggle="tooltip"
-         data-bs-title="Em breve a consulta CCS estará disponível!">
-      <div class="border border-2 rounded p-3 shadow bg-light">
-        <div class="row">
-          <div class="col">
-            <img src="{% static 'images/img_card_ccs.png' %}"
-                 alt="Logo CCS"
-                 width="30"
-                 class="me-2" />
-            <span class="fw-bold">Consulta CCS</span>
-          </div>
-        </div>
-        <div class="row mt-3">
-          <div class="col">
-            <button class="btn btn-outline-dark me-2 w-25 fw-bold"
-                    hx-get="{% url 'bacen:chave' %}"
-                    hx-target="#modals-consulta"
-                    hx-trigger="click"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modals-consulta"
-                    disabled>CPF/CNPJ</button>
-          </div>
-        </div>
+  {% else %}
+    <div class="row mt-4">
+      <div class="col">
+        <p class="text-secondary fw-light">
+          <i class="bi bi-exclamation-diamond-fill text-warning"></i>
+          Você não tem permissão para realizar consultas.
+          Entre em contato com o administrador do sistema para mais informações.
+        </p>
       </div>
     </div>
-  </div>
-  <div class="row mt-4">
-    <div class="col">
-      <p class="text-secondary fw-light">
-        <i class="bi bi-info-circle-fill"></i>
-        Adicione uma consulta clicando no botão "CPF/CNPJ" ou "Chave" acima.
-        Você pode consultar CPF, CNPJ ou Chaves Pix.
-        As consultas são processadas em segundo plano e você pode acompanhar o status delas na tabela abaixo.
-      </p>
-    </div>
-  </div>
+  {% endif %}
   <div class="row border border-2 rounded p-3 shadow bg-light mb-4">
     <div class="col">
       <h5 class="mb-4 d-flex align-items-center justify-content-between">

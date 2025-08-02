@@ -20,6 +20,7 @@ class RequisicaoBacen(AppModel):
     TIPO_REQUISICAO_CHOICES = [
         ("1", "Pix CPF/CNPJ"),
         ("2", "Pix Chave"),
+        ("3", "CCS CPF/CNPJ"),
     ]
     tipo_requisicao = models.CharField(
         max_length=1,
