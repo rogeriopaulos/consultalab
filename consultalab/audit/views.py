@@ -78,7 +78,12 @@ class LogEntriesView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = "users.access_admin_section"
 
     def get(self, request, *args, **kwargs):
-        log_entries = LogEntry.objects.all().order_by("-timestamp")
+        log_entries_list = LogEntry.objects.all().order_by("-timestamp")
+
+        paginator = Paginator(log_entries_list, 10)  # 10 entradas por página
+        page_number = request.GET.get("page")
+        log_entries = paginator.get_page(page_number)
+
         return render(
             request,
             "audit/partials/log_entries_list.html",
@@ -90,7 +95,12 @@ class AccessLogsView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = "users.access_admin_section"
 
     def get(self, request, *args, **kwargs):
-        access_logs = AccessLog.objects.all().order_by("-attempt_time")
+        access_logs_list = AccessLog.objects.all().order_by("-attempt_time")
+
+        paginator = Paginator(access_logs_list, 10)  # 10 entradas por página
+        page_number = request.GET.get("page")
+        access_logs = paginator.get_page(page_number)
+
         return render(
             request,
             "audit/partials/access_logs_list.html",

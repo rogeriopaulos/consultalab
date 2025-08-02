@@ -30,3 +30,6 @@
     {% endfor %}
   </tbody>
 </table>
+{% if log_entries.has_other_pages %}
+  {% include "audit/partials/includes/log_entries_pagination.html" with hx_target="tab-content" %}
+{% endif %}
