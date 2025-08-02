@@ -1,35 +1,97 @@
-<table class="table table-striped cl-table">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Data/Hora</th>
-      <th>Módulo/Ato</th>
-      <th>Objeto criado/alterado</th>
-      <th>Usuário</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for log in log_entries %}
-      <tr>
-        <td>
-          <a href="#"
-             class="text-decoration-none text-success"
-             hx-get="{% url 'audit:log_entry_detail' log.id %}"
-             hx-target="#modals-detalhes"
-             hx-trigger="click"
-             data-bs-toggle="modal"
-             data-bs-target="#modals-detalhes">
-            <i class="bi bi-plus-circle-fill"></i>
-          </a>
-        </td>
-        <td>{{ log.timestamp }}</td>
-        <td>{{ log.content_type.app_label }}</td>
-        <td>{{ log.object_repr }}</td>
-        <td>{{ log.actor|default:"-----" }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% if log_entries.has_other_pages %}
-  {% include "audit/partials/includes/log_entries_pagination.html" with hx_target="tab-content" %}
-{% endif %}
+<div class="row border-bottom border-secondary border-opacity-10">
+  <div class="col d-flex justify-content-between align-items-center mb-3">
+    <h5 class="text-secondary">
+      <i class="bi bi-list-ul me-2"></i>
+      Logs de Auditoria
+    </h5>
+  </div>
+</div>
+<!-- Filtros de Pesquisa -->
+<div class="row">
+  <div class="col-md-4">
+    <label for="actor-search" class="form-label">Usuário (Nome ou E-mail)</label>
+    <input class="form-control"
+           id="actor-search"
+           type="search"
+           name="actor"
+           value="{{ actor_search|default:'' }}"
+           placeholder="Digite o nome ou e-mail do usuário"
+           hx-post="{% url 'audit:log_entries_search' %}"
+           hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
+           hx-target="#log-entries-table-container"
+           hx-include="[name='date_from'], [name='date_to']"
+           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' />
+  </div>
+  <div class="col-md-3">
+    <label for="date-from" class="form-label">Data Início</label>
+    <input class="form-control"
+           id="date-from"
+           type="date"
+           name="date_from"
+           value="{{ date_from|default:'' }}"
+           hx-post="{% url 'audit:log_entries_search' %}"
+           hx-trigger="change"
+           hx-target="#log-entries-table-container"
+           hx-include="[name='actor'], [name='date_to']"
+           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' />
+  </div>
+  <div class="col-md-3">
+    <label for="date-to" class="form-label">Data Fim</label>
+    <input class="form-control"
+           id="date-to"
+           type="date"
+           name="date_to"
+           value="{{ date_to|default:'' }}"
+           hx-post="{% url 'audit:log_entries_search' %}"
+           hx-trigger="change"
+           hx-target="#log-entries-table-container"
+           hx-include="[name='actor'], [name='date_from']"
+           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' />
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-outline-secondary"
+            onclick="document.getElementById('actor-search').value=''; document.getElementById('date-from').value=''; document.getElementById('date-to').value=''; htmx.trigger('#actor-search', 'input');">
+      <i class="bi bi-x-circle me-1"></i>
+      Limpar
+    </button>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-md table-responsive" id="log-entries-table-container">
+    <table class="table table-striped cl-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Data/Hora</th>
+          <th>Módulo/Ato</th>
+          <th>Objeto criado/alterado</th>
+          <th>Usuário</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in log_entries %}
+          <tr>
+            <td>
+              <a href="#"
+                 class="text-decoration-none text-success"
+                 hx-get="{% url 'audit:log_entry_detail' log.id %}"
+                 hx-target="#modals-detalhes"
+                 hx-trigger="click"
+                 data-bs-toggle="modal"
+                 data-bs-target="#modals-detalhes">
+                <i class="bi bi-plus-circle-fill"></i>
+              </a>
+            </td>
+            <td>{{ log.timestamp }}</td>
+            <td>{{ log.content_type.app_label }}</td>
+            <td>{{ log.object_repr }}</td>
+            <td>{{ log.actor|default:"-----" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if log_entries.has_other_pages %}
+      {% include "audit/partials/includes/log_entries_pagination.html" with hx_target="log-entries-table-container" %}
+    {% endif %}
+  </div>
+</div>

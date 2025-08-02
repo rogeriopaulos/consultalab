@@ -78,16 +78,136 @@ class LogEntriesView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = "users.access_admin_section"
 
     def get(self, request, *args, **kwargs):
-        log_entries_list = LogEntry.objects.all().order_by("-timestamp")
+        # Obter parâmetros de filtro
+        actor_search = request.GET.get("actor", "").strip()
+        date_from = request.GET.get("date_from", "").strip()
+        date_to = request.GET.get("date_to", "").strip()
+
+        # Começar com todos os logs
+        log_entries_list = LogEntry.objects.all()
+
+        # Filtrar por usuário (actor)
+        if actor_search:
+            log_entries_list = log_entries_list.filter(
+                Q(actor__name__icontains=actor_search)
+                | Q(actor__email__icontains=actor_search),
+            )
+
+        # Filtrar por período de data
+        if date_from:
+            try:
+                from django.utils.dateparse import parse_date
+
+                parsed_date_from = parse_date(date_from)
+                if parsed_date_from:
+                    log_entries_list = log_entries_list.filter(
+                        timestamp__date__gte=parsed_date_from,
+                    )
+            except ValueError:
+                pass
+
+        if date_to:
+            try:
+                from django.utils.dateparse import parse_date
+
+                parsed_date_to = parse_date(date_to)
+                if parsed_date_to:
+                    log_entries_list = log_entries_list.filter(
+                        timestamp__date__lte=parsed_date_to,
+                    )
+            except ValueError:
+                pass
+
+        log_entries_list = log_entries_list.order_by("-timestamp")
 
         paginator = Paginator(log_entries_list, 10)  # 10 entradas por página
         page_number = request.GET.get("page")
         log_entries = paginator.get_page(page_number)
 
+        # Se há filtros aplicados e é uma requisição HTMX, retorna apenas a tabela
+        if (actor_search or date_from or date_to) and request.headers.get("HX-Request"):
+            return render(
+                request,
+                "audit/partials/includes/log_entries_table_with_pagination.html",
+                {
+                    "log_entries": log_entries,
+                    "actor_search": actor_search,
+                    "date_from": date_from,
+                    "date_to": date_to,
+                },
+            )
+
         return render(
             request,
             "audit/partials/log_entries_list.html",
-            {"log_entries": log_entries},
+            {
+                "log_entries": log_entries,
+                "actor_search": actor_search,
+                "date_from": date_from,
+                "date_to": date_to,
+            },
+        )
+
+
+class LogEntriesSearchView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "users.access_admin_section"
+
+    def post(self, request, *args, **kwargs):
+        # Obter parâmetros de filtro
+        actor_search = request.POST.get("actor", "").strip()
+        date_from = request.POST.get("date_from", "").strip()
+        date_to = request.POST.get("date_to", "").strip()
+
+        # Começar com todos os logs
+        log_entries_list = LogEntry.objects.all()
+
+        # Filtrar por usuário (actor)
+        if actor_search:
+            log_entries_list = log_entries_list.filter(
+                Q(actor__name__icontains=actor_search)
+                | Q(actor__email__icontains=actor_search),
+            )
+
+        # Filtrar por período de data
+        if date_from:
+            try:
+                from django.utils.dateparse import parse_date
+
+                parsed_date_from = parse_date(date_from)
+                if parsed_date_from:
+                    log_entries_list = log_entries_list.filter(
+                        timestamp__date__gte=parsed_date_from,
+                    )
+            except ValueError:
+                pass
+
+        if date_to:
+            try:
+                from django.utils.dateparse import parse_date
+
+                parsed_date_to = parse_date(date_to)
+                if parsed_date_to:
+                    log_entries_list = log_entries_list.filter(
+                        timestamp__date__lte=parsed_date_to,
+                    )
+            except ValueError:
+                pass
+
+        log_entries_list = log_entries_list.order_by("-timestamp")
+
+        paginator = Paginator(log_entries_list, 10)  # 10 entradas por página
+        page_number = request.GET.get("page", 1)
+        log_entries = paginator.get_page(page_number)
+
+        return render(
+            request,
+            "audit/partials/includes/log_entries_table_with_pagination.html",
+            {
+                "log_entries": log_entries,
+                "actor_search": actor_search,
+                "date_from": date_from,
+                "date_to": date_to,
+            },
         )
 
 

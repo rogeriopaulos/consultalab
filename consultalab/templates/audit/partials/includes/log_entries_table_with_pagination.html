@@ -1,0 +1,35 @@
+<table class="table table-striped cl-table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Data/Hora</th>
+      <th>Módulo/Ato</th>
+      <th>Objeto criado/alterado</th>
+      <th>Usuário</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in log_entries %}
+      <tr>
+        <td>
+          <a href="#"
+             class="text-decoration-none text-success"
+             hx-get="{% url 'audit:log_entry_detail' log.id %}"
+             hx-target="#modals-detalhes"
+             hx-trigger="click"
+             data-bs-toggle="modal"
+             data-bs-target="#modals-detalhes">
+            <i class="bi bi-plus-circle-fill"></i>
+          </a>
+        </td>
+        <td>{{ log.timestamp }}</td>
+        <td>{{ log.content_type.app_label }}</td>
+        <td>{{ log.object_repr }}</td>
+        <td>{{ log.actor|default:"-----" }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if log_entries.has_other_pages %}
+  {% include "audit/partials/includes/log_entries_pagination.html" with hx_target="log-entries-table-container" %}
+{% endif %}

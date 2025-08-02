@@ -2,6 +2,7 @@ from django.urls import path
 
 from consultalab.audit.views import AccessLogsView
 from consultalab.audit.views import AdminSectionView
+from consultalab.audit.views import LogEntriesSearchView
 from consultalab.audit.views import LogEntriesView
 from consultalab.audit.views import LogEntryDetailView
 from consultalab.audit.views import UsersSearchView
@@ -15,6 +16,7 @@ htmx_urlpatterns = [
     path("tab1/usuarios/", UsersView.as_view(), name="users"),
     path("tab1/usuarios/busca/", UsersSearchView.as_view(), name="users_search"),
     path("tab2/logs/", LogEntriesView.as_view(), name="log_entries"),
+    path("tab2/logs/busca/", LogEntriesSearchView.as_view(), name="log_entries_search"),
     path(
         "tab2/logs/<int:log_id>/detalhes/",
         LogEntryDetailView.as_view(),
