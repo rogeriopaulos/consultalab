@@ -1,5 +1,11 @@
 {% load static crispy_forms_tags i18n %}
 
+{% if force_password_change %}
+  <div class="alert alert-warning" role="alert">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <strong>Atenção!</strong> É necessário alterar sua senha antes de continuar usando o sistema.
+  </div>
+{% endif %}
 <h5 class="text-secondary">
   <i class="fa-solid fa-key"></i> Alterar Senha
 </h5>

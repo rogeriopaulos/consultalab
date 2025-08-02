@@ -193,10 +193,19 @@ user_email_view = UserEmailView.as_view()
 
 class UserSecurityView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        # Verificar force_password_change tanto no parâmetro GET quanto no usuário
+        force_password_change = (
+            request.GET.get("force_password_change") == "true"
+            or request.user.force_password_change
+        )
+
         return render(
             request,
             "users/detail/tabs/security.html",
-            {"password_change_form": ChangePasswordForm()},
+            {
+                "password_change_form": ChangePasswordForm(user=request.user),
+                "force_password_change": force_password_change,
+            },
         )
 
 

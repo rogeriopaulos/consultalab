@@ -10,6 +10,10 @@
   <link href="{% static 'css/tab_section.css' %}" rel="stylesheet" />
   <link href="{% static 'css/user_detail.css' %}" rel="stylesheet" />
 {% endblock css %}
+{% block javascript %}
+  {{ block.super }}
+  <script defer src="{% static 'js/user_detail.js' %}"></script>
+{% endblock javascript %}
 {% block content %}
   <div class="container">
     <div class="row border border-2 rounded p-3 shadow bg-light mb-4 mt-3">
@@ -32,12 +36,13 @@
                class="flex-sm-fill text-sm-center nav-link cl-nav-link"
                data-bs-toggle="pill"
                href="#">E-mail</a>
-            <a hx-get="{% url 'users:security_tab' %}"
+            <a hx-get="{% url 'users:security_tab' %}{% if request.GET.force_password_change %}?force_password_change=true{% endif %}"
                hx-target="#tab-content"
                hx-trigger="click"
                class="flex-sm-fill text-sm-center nav-link cl-nav-link"
                data-bs-toggle="pill"
-               href="#">Segurança</a>
+               href="#"
+               id="security-tab">Segurança</a>
           </nav>
         </div>
         <div id="tabs"
@@ -50,3 +55,21 @@
     </div>
   </div>
 {% endblock content %}
+{% block inline_javascript %}
+  {% if request.GET.force_password_change %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          const securityTab = document.getElementById('security-tab');
+          if (securityTab) {
+            securityTab.click();
+          }
+        }, 300);
+
+        const url = new URL(window.location);
+        url.searchParams.delete('force_password_change');
+        window.history.replaceState({}, '', url);
+      });
+    </script>
+  {% endif %}
+{% endblock inline_javascript %}

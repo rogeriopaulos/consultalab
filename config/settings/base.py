@@ -151,6 +151,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     # https://django-auditlog.readthedocs.io/en/latest/usage.html#middleware
     "auditlog.middleware.AuditlogMiddleware",
+    "consultalab.core.custom_middlewares.ForceChangePasswordMiddleware",
     # https://django-axes.readthedocs.io/en/latest/2_installation.html
     "axes.middleware.AxesMiddleware",
 ]
