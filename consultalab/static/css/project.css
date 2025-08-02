@@ -96,6 +96,48 @@ tr.htmx-swapping td {
   transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+table.cl-table {
+  font-size: 14px;
+}
+
+.cl-nav-link {
+  color: #013e64 !important;
+}
+
+.cl-nav-link.active {
+  background-color: #013e64 !important;
+  color: #fff !important;
+}
+
+.cl-outline-primary {
+  border-color: #013e64 !important;
+  color: #013e64 !important;
+}
+
+.cl-outline-primary:hover {
+  background-color: #013e64 !important;
+  color: #fff !important;
+}
+
+.cl-outline-primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(1, 62, 100, 0.25) !important;
+}
+
+.cl-outline-primary:focus:hover {
+  background-color: #013e64 !important;
+  color: #fff !important;
+}
+
+.cl-outline-primary:active {
+  background-color: #013e64 !important;
+  color: #fff !important;
+}
+
+.cl-outline-primary:active:hover {
+  background-color: #013e64 !important;
+  color: #fff !important;
+}
+
 /* Media Queries */
 @media (max-width: 1200px) {
   button#filter-button {

@@ -1,9 +1,12 @@
-#notifications-table_wrapper > div.dataTables_filter {
-  margin-top: -30px;
+table#notifications-table
+  > thead
+  > tr.datatable-column-filter-row
+  th:nth-child(3) {
+  text-align: center;
 }
 
-table#notifications-table > thead > tr.datatable-column-filter-row th:nth-child(3) {
-  text-align: center;
+#notifications-table_wrapper > div.dataTables_filter {
+  margin-top: -30px;
 }
 
 #contentViewModal {
