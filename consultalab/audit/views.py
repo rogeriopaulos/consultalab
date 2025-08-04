@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render
+from django.utils.dateparse import parse_date
 from django.views.generic import TemplateView
 from django.views.generic import View
 
@@ -96,8 +97,6 @@ class LogEntriesView(LoginRequiredMixin, PermissionRequiredMixin, View):
         # Filtrar por período de data
         if date_from:
             try:
-                from django.utils.dateparse import parse_date
-
                 parsed_date_from = parse_date(date_from)
                 if parsed_date_from:
                     log_entries_list = log_entries_list.filter(
@@ -108,8 +107,6 @@ class LogEntriesView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         if date_to:
             try:
-                from django.utils.dateparse import parse_date
-
                 parsed_date_to = parse_date(date_to)
                 if parsed_date_to:
                     log_entries_list = log_entries_list.filter(
@@ -249,8 +246,6 @@ class AccessLogsView(LoginRequiredMixin, PermissionRequiredMixin, View):
         # Filtrar por período de data
         if date_from:
             try:
-                from django.utils.dateparse import parse_date
-
                 parsed_date_from = parse_date(date_from)
                 if parsed_date_from:
                     access_logs_list = access_logs_list.filter(
@@ -261,8 +256,6 @@ class AccessLogsView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         if date_to:
             try:
-                from django.utils.dateparse import parse_date
-
                 parsed_date_to = parse_date(date_to)
                 if parsed_date_to:
                     access_logs_list = access_logs_list.filter(

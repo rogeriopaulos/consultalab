@@ -1,67 +1,97 @@
-<!-- Formulário de filtros -->
-<div class="mb-4">
-  <form hx-post="{% url 'audit:access_logs_search' %}"
-        hx-target="#tab-content"
-        hx-swap="innerHTML"
-        class="row g-3">
+<div class="row mb-4">
+  <div class="col-md-4">
+    <label for="username" class="form-label">Usuário</label>
+    <input type="search"
+           class="form-control"
+           id="username-search"
+           name="username"
+           placeholder="Digite o nome de usuário"
+           value="{{ username_search|default:'' }}"
+           hx-post="{% url 'audit:access_logs_search' %}"
+           hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
+           hx-target="#access-logs-table-container"
+           hx-include="[name='date_from'], [name='date_to']"
+           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' />
+  </div>
+  <div class="col-md-3">
+    <label for="date_from" class="form-label">Data Início</label>
+    <input type="date"
+           class="form-control"
+           id="date-from"
+           name="date_from"
+           value="{{ date_from|default:'' }}"
+           hx-post="{% url 'audit:access_logs_search' %}"
+           hx-trigger="change"
+           hx-target="#access-logs-table-container"
+           hx-include="[name='username']"
+           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' />
+  </div>
+  <div class="col-md-3">
+    <label for="date_to" class="form-label">Data Fim</label>
+    <input type="date"
+           class="form-control"
+           id="date-to"
+           name="date_to"
+           value="{{ date_to|default:'' }}"
+           hx-post="{% url 'audit:access_logs_search' %}"
+           hx-trigger="change"
+           hx-target="#access-logs-table-container"
+           hx-include="[name='username'], [name='date_from']"
+           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' />
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-outline-secondary"
+            onclick="document.getElementById('username-search').value=''; document.getElementById('date-from').value=''; document.getElementById('date-to').value=''; htmx.trigger('#username-search', 'input');">
+      <i class="bi bi-x-circle me-1"></i>
+      Limpar
+    </button>
+  </div>
+  {% comment %} <form hx-post="{% url 'audit:access_logs_search' %}" hx-target="#tab-content" hx-swap="innerHTML" class="row g-3">
     {% csrf_token %}
     <div class="col-md-4">
       <label for="username" class="form-label">Usuário</label>
-      <input type="text"
-             class="form-control"
-             id="username"
-             name="username"
-             placeholder="Digite o nome de usuário"
-             value="{{ username_search|default:'' }}" />
+      <input type="text" class="form-control" id="username" name="username" placeholder="Digite o nome de usuário" value="{{ username_search|default:'' }}" />
     </div>
     <div class="col-md-3">
       <label for="date_from" class="form-label">Data inicial</label>
-      <input type="date"
-             class="form-control"
-             id="date_from"
-             name="date_from"
-             value="{{ date_from|default:'' }}" />
+      <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from|default:'' }}" />
     </div>
     <div class="col-md-3">
       <label for="date_to" class="form-label">Data final</label>
-      <input type="date"
-             class="form-control"
-             id="date_to"
-             name="date_to"
-             value="{{ date_to|default:'' }}" />
+      <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to|default:'' }}" />
     </div>
     <div class="col-md-2 d-flex align-items-end">
       <button type="submit" class="btn btn-primary me-2">Filtrar</button>
-      <a href="#"
-         hx-get="{% url 'audit:access_logs' %}"
-         hx-target="#tab-content"
-         hx-swap="innerHTML"
-         class="btn btn-outline-secondary">Limpar</a>
+      <a href="#" hx-get="{% url 'audit:access_logs' %}" hx-target="#tab-content" hx-swap="innerHTML" class="btn btn-outline-secondary">Limpar</a>
     </div>
-  </form>
+  </form> {% endcomment %}
 </div>
-<table class="table table-striped cl-table">
-  <thead>
-    <tr>
-      <th>Acesso</th>
-      <th>Logout</th>
-      <th>IP</th>
-      <th>Usuário</th>
-      <th>User Agent</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for log in access_logs %}
-      <tr>
-        <td>{{ log.attempt_time }}</td>
-        <td>{{ log.logout_time|default:"----" }}</td>
-        <td>{{ log.ip_address }}</td>
-        <td>{{ log.username }}</td>
-        <td>{{ log.user_agent }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="row">
+  <div class="col-md table-responsive" id="access-logs-table-container">
+    <table class="table table-striped cl-table">
+      <thead>
+        <tr>
+          <th>Acesso</th>
+          <th>Logout</th>
+          <th>IP</th>
+          <th>Usuário</th>
+          <th>User Agent</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in access_logs %}
+          <tr>
+            <td>{{ log.attempt_time }}</td>
+            <td>{{ log.logout_time|default:"----" }}</td>
+            <td>{{ log.ip_address }}</td>
+            <td>{{ log.username }}</td>
+            <td>{{ log.user_agent }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% if access_logs.has_other_pages %}
-  {% include "audit/partials/includes/access_logs_pagination.html" with hx_target="tab-content" %}
+  {% include "audit/partials/includes/access_logs_pagination.html" with hx_target="access-logs-table-container" %}
 {% endif %}
