@@ -197,7 +197,11 @@ class RequisicaoBacenPDFView(LoginRequiredMixin, View):
         # Nome do arquivo baseado no tipo de relatório
         filename_suffix = "resumido" if report_type == "summary" else "detalhado"
 
-        created_at = data["requisicao_data"]["criado_em"].strftime("%Y%m%d")
+        criado_em = data["requisicao_data"]["criado_em"]
+        if criado_em is not None:
+            created_at = criado_em.strftime("%Y%m%d")
+        else:
+            created_at = "unknown"
         term = slugify(data["requisicao_data"]["termo_busca"])
         filename = f"relatorio_{filename_suffix}_{created_at}_{term}.pdf"
 
