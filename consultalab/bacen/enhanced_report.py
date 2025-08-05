@@ -411,7 +411,12 @@ class EnhancedPixReportGenerator:
 
             for i, chave in enumerate(chaves_pix):
                 # Título da chave
-                chave_title = f"CHAVE {i + 1}: {chave.get('chave', 'N/A')} - Status: {chave.get('status', 'N/A')}"  # noqa: E501
+                chave_num = i + 1
+                chave_valor = chave.get('chave', 'N/A')
+                chave_status = chave.get('status', 'N/A')
+                chave_title = (
+                    f"CHAVE {chave_num}: {chave_valor} - Status: {chave_status}"
+                )
                 story.append(Paragraph(chave_title, self.styles["ChaveTitle"]))
                 story.append(Spacer(1, 6))
 
