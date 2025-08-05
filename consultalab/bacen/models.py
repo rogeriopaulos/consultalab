@@ -277,7 +277,7 @@ class ChavePix(AppModel):
         if not self.participante:
             return "Desconhecido"
 
-        nome = self.participante.get("nome", False)
+        nome = self.participante.get("nome", "")
         cod = self.participante.get("codigoCompensacao", "")
         if nome and cod:
             return f"{cod} {nome}"
