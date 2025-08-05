@@ -53,6 +53,11 @@ htmx_urlpatterns = [
         views.RequisicaoBacenDetailView.as_view(),
         name="requisicao_bacen_detail",
     ),
+    path(
+        "requisicao/<int:requisicao_id>/relatorio/modal/",
+        views.ReportTypeModalView.as_view(),
+        name="requisicao_bacen_relatorio_modal",
+    ),
 ]
 
 urlpatterns += htmx_urlpatterns

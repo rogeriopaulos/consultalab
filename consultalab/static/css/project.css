@@ -30,7 +30,8 @@ body {
   display: block;
 }
 
-#modals-consulta {
+#modals-consulta,
+#modal-reports {
   display: none;
 }
 
