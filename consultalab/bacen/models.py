@@ -270,8 +270,22 @@ class ChavePix(AppModel):
             "tipo_conta": self.tipo_conta,
             "eventos_vinculo": [evento.to_dict() for evento in eventos_vinculo],
             "data_abertura_conta": self.data_abertura_conta,
-            "banco": self.banco,
+            "banco": self.get_bank_label(),
         }
+
+    def get_bank_label(self):
+        if not self.participante:
+            return "Desconhecido"
+
+        nome = self.participante.get("nome", False)
+        cod = self.participante.get("codigoCompensacao", "")
+        if nome and cod:
+            return f"{cod} {nome}"
+
+        if nome:
+            return nome
+
+        return "Desconhecido"
 
 
 class EventoVinculo(AppModel):
@@ -390,8 +404,22 @@ class EventoVinculo(AppModel):
             "numero_conta": self.numero_conta,
             "tipo_conta": self.tipo_conta,
             "data_abertura_conta": self.data_abertura_conta,
-            "banco": self.banco,
+            "banco": self.get_bank_label(),
         }
+
+    def get_bank_label(self):
+        if not self.participante:
+            return "Desconhecido"
+
+        nome = self.participante.get("nome", False)
+        cod = self.participante.get("codigoCompensacao", "")
+        if nome and cod:
+            return f"{cod} {nome}"
+
+        if nome:
+            return nome
+
+        return "Desconhecido"
 
 
 # Auditlog registries

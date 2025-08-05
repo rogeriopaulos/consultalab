@@ -5,18 +5,21 @@ from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from django.core.paginator import Paginator
 from django.http import FileResponse
+from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.utils.text import slugify
 from django.views.generic import CreateView
 from django.views.generic import DetailView
 from django.views.generic import View
 
+from consultalab.bacen.enhanced_report import EnhancedPixReportGenerator
 from consultalab.bacen.filters import RequisicaoBacenFilter
 from consultalab.bacen.forms import RequisicaoBacenFilterFormHelper
 from consultalab.bacen.forms import RequisicaoBacenForm
 from consultalab.bacen.helpers import LIST_PAGE_SIZE
 from consultalab.bacen.models import RequisicaoBacen
-from consultalab.bacen.report import PixReportGenerator
+from consultalab.bacen.report_forms import ReportTypeForm
 from consultalab.bacen.tasks import request_bacen_pix
 
 logger = logging.getLogger(__name__)
@@ -146,19 +149,59 @@ class RequisicaoBacenDetailView(LoginRequiredMixin, DetailView):
         )
 
 
+class ReportTypeModalView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        requisicao_id = kwargs.get("requisicao_id")
+
+        try:
+            requisicao = RequisicaoBacen.objects.get(
+                id=requisicao_id,
+                user=request.user,
+            )
+        except RequisicaoBacen.DoesNotExist:
+            return HttpResponseForbidden("Requisição não encontrada ou acesso negado.")
+
+        form = ReportTypeForm()
+
+        return render(
+            request,
+            "bacen/partials/report_type_modal.html",
+            {"requisicao": requisicao, "form": form},
+        )
+
+
 class RequisicaoBacenPDFView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         requisicao_id = kwargs.get("requisicao_id")
         requisicao = RequisicaoBacen.objects.get(id=requisicao_id)
 
-        report_generator = PixReportGenerator()
+        # Verificar se o usuário tem permissão para acessar esta requisição
+        if requisicao.user != request.user:
+            return HttpResponseForbidden("Acesso negado.")
+
+        # Obter o tipo de relatório da query string (padrão: detailed)
+        report_type = request.GET.get("report_type", "detailed")
+
+        # Validar o tipo de relatório
+        if report_type not in ["summary", "detailed"]:
+            report_type = "detailed"
+
+        # Usar o gerador aprimorado
+        report_generator = EnhancedPixReportGenerator(report_type=report_type)
         data = requisicao.to_dict()
         buffer = report_generator.generate_report(
             data["requisicao_data"],
             data["chaves_pix"],
         )
 
-        return FileResponse(buffer, as_attachment=True, filename="requisicao_bacen.pdf")
+        # Nome do arquivo baseado no tipo de relatório
+        filename_suffix = "resumido" if report_type == "summary" else "detalhado"
+
+        created_at = data["requisicao_data"]["criado_em"].strftime("%Y%m%d")
+        term = slugify(data["requisicao_data"]["termo_busca"])
+        filename = f"relatorio_{filename_suffix}_{created_at}_{term}.pdf"
+
+        return FileResponse(buffer, as_attachment=True, filename=filename)
 
 
 class RequisicaoBacenDeleteView(LoginRequiredMixin, View):

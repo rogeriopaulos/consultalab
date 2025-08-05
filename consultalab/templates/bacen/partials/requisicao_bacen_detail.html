@@ -5,12 +5,16 @@
         <span class="badge bg-primary me-2">{{ requisicao.get_tipo_requisicao_display }}</span>
         {{ requisicao.termo_busca }}
       </h5>
-      <a href="{% url 'bacen:requisicao_bacen_relatorio' requisicao.id %}"
-         role="button"
-         class="btn btn-outline-secondary">
+      <button type="button"
+              class="btn btn-outline-secondary"
+              hx-get="{% url 'bacen:requisicao_bacen_relatorio_modal' requisicao.id %}"
+              hx-target="#modal-reports"
+              hx-trigger="click"
+              data-bs-toggle="modal"
+              data-bs-target="#modal-reports">
         <i class="bi bi-printer"></i>
         Relatório
-      </a>
+      </button>
     </div>
     <div class="modal-body container">
       <div class="row border border-2 border-secondary border-opacity-25 rounded-3 mb-3 p-2 d-flex align-items-center">
