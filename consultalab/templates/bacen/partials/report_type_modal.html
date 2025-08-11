@@ -36,9 +36,7 @@
                 <div class="form-check mb-2">
                   {{ radio.tag }}
                   <label class="form-check-label" for="{{ radio.id_for_label }}">
-                    {% with label_parts=radio.choice_label|cut:" "|split:": " %}
-                      <strong>{{ label_parts.0 }}</strong>{% if label_parts|length > 1 %} - {{ label_parts.1 }}{% endif %}
-                    {% endwith %}
+                    <strong>{{ radio.choice_label }}</strong>
                   </label>
                 </div>
               {% endfor %}

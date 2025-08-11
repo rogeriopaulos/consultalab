@@ -5,8 +5,8 @@ class ReportTypeForm(forms.Form):
     """Formulário para seleção do tipo de relatório"""
 
     REPORT_TYPE_CHOICES = [
-        ("summary", "Resumido - Apenas informações das chaves"),
-        ("detailed", "Detalhado - Chaves e histórico de eventos"),
+        ("summary", "Resumido"),
+        ("detailed", "Detalhado"),
     ]
 
     report_type = forms.ChoiceField(
