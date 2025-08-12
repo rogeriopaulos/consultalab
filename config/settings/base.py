@@ -328,7 +328,10 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://docs.allauth.org/en/latest/account/configuration.html
 ACCOUNT_ADAPTER = "consultalab.users.adapters.AccountAdapter"
 # https://docs.allauth.org/en/latest/account/forms.html
-ACCOUNT_FORMS = {"signup": "consultalab.users.forms.UserSignupForm"}
+ACCOUNT_FORMS = {
+    "signup": "consultalab.users.forms.UserSignupForm",
+    "login": "consultalab.users.forms.CustomLoginForm",
+}
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_ADAPTER = "consultalab.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html

@@ -1,3 +1,4 @@
+from allauth.account.forms import LoginForm
 from allauth.account.forms import SignupForm
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django.contrib.auth import forms
@@ -43,6 +44,26 @@ class UserSignupForm(SignupForm):
     Default fields will be added automatically.
     Check UserSocialSignupForm for accounts created from social.
     """
+
+    name = CharField(
+        max_length=255,
+        required=True,
+        label="Nome Completo",
+        strip=True,
+    )
+    department = ModelChoiceField(
+        queryset=Department.objects.filter(is_active=True),
+        label="Órgão/Unidade",
+        required=True,
+        empty_label="Selecione um órgão/unidade",
+    )
+
+    def save(self, request):
+        user = super().save(request)
+        user.name = self.cleaned_data["name"]
+        user.department = self.cleaned_data["department"]
+        user.save()
+        return user
 
 
 class UserSocialSignupForm(SocialSignupForm):
@@ -129,3 +150,15 @@ class UserUpdateForm(ModelForm):
             msg = _("Este e-mail já está cadastrado.")
             raise forms.ValidationError(msg)
         return email
+
+
+class CustomLoginForm(LoginForm):
+    """
+    Custom login form to use the email field instead of username.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["login"].label = _("E-mail")
+        self.fields["login"].widget.attrs["placeholder"] = "seu@email.com"
+        self.fields["password"].widget.attrs["placeholder"] = "......."

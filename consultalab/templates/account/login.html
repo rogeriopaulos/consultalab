@@ -4,7 +4,7 @@
 {% load allauth account %}
 
 {% block head_title %}
-  {% trans "Sign In" %} - Blah
+  {% trans "Sign In" %}
 {% endblock head_title %}
 {% block content %}
   {% if not SOCIALACCOUNT_ONLY %}
@@ -36,7 +36,7 @@
 {% endelement %}
 {% endslot %}
 {% endelement %}
-<div class="divider">
+<div class="cl-divider">
   <span>ou</span>
 </div>
 <p class="signup-link">Não tem uma conta? {{ link }}Criar conta{{ end_link }}</p>
