@@ -4,28 +4,29 @@
 {% load allauth account %}
 
 {% block head_title %}
-  {% trans "Sign In" %}
+  {% trans "Sign In" %} - Blah
 {% endblock head_title %}
 {% block content %}
-  <div class="card-header">
-    {% element h2 %}
-    {% trans "Sign In" %}
-  {% endelement %}
   {% if not SOCIALACCOUNT_ONLY %}
-    {% setvar link %}
-    <a href="{{ signup_url }}">
-    {% endsetvar %}
-    {% setvar end_link %}
-  </a>
-{% endsetvar %}
-{% element p %}
-{% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
-{% endelement %}
-{% url 'account_login' as login_url %}
-{% element form form=form method="post" action=login_url tags="entrance,login" %}
-{% slot body %}
-{% csrf_token %}
-{% element fields form=form unlabeled=True %}
+    <div class="card-header">
+      <h2 class="card-title">Entrar</h2>
+      <p class="card-description">Faça login na sua conta</p>
+    </div>
+    <div class="card-content">
+      {% setvar link %}
+      <a href="{{ signup_url }}" class="text-decoration-none fw-bold">
+      {% endsetvar %}
+      {% setvar end_link %}
+    </a>
+  {% endsetvar %}
+  {% comment %} {% element p %}
+      {% blocktranslate %}If you have not created an account, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
+  {% endelement %} {% endcomment %}
+  {% url 'account_login' as login_url %}
+  {% element form form=form method="post" action=login_url tags="entrance,login" %}
+  {% slot body %}
+  {% csrf_token %}
+  {% element fields form=form unlabeled=True %}
 {% endelement %}
 {{ redirect_field }}
 {% endslot %}
@@ -35,6 +36,10 @@
 {% endelement %}
 {% endslot %}
 {% endelement %}
+<div class="divider">
+  <span>ou</span>
+</div>
+<p class="signup-link">Não tem uma conta? {{ link }}Criar conta{{ end_link }}</p>
 {% endif %}
 {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
   {% element hr %}

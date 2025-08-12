@@ -177,7 +177,6 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
-  padding: var(--space-6);
 }
 
 .card-header {
@@ -187,6 +186,7 @@ body {
   flex-direction: column;
   gap: var(--space-2);
   border-bottom: 1px solid var(--gray-100);
+  background: transparent;
 }
 
 .card-title {
@@ -202,32 +202,6 @@ body {
 
 .card-content {
   padding: var(--space-6);
-}
-
-/* Icon wrapper */
-.icon-wrapper {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto var(--space-4);
-  background: rgba(17, 92, 144, 0.1);
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-wrapper.success {
-  background: var(--green-100);
-}
-
-.icon-wrapper .icon {
-  width: 32px;
-  height: 32px;
-  color: var(--primary-blue);
-}
-
-.icon-wrapper.success .icon {
-  color: var(--green-600);
 }
 
 /* Form */
@@ -271,7 +245,7 @@ body {
 
 /* Buttons */
 .btn-primary {
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-3) var(--space-3);
   background: var(--primary-blue);
   color: var(--white);
   border: none;
@@ -328,12 +302,14 @@ body {
 }
 
 /* Forgot password link */
-.forgot-password {
+#id_password_helptext {
   text-align: right;
+  margin-top: var(--space-4);
 }
 
-.forgot-password .link-button {
+#id_password_helptext > a {
   font-size: var(--font-size-sm);
+  text-decoration: none;
 }
 
 /* Divider */
@@ -633,4 +609,8 @@ table.cl-table {
   color: #dc2626;
   font-size: var(--font-size-sm);
   margin-top: var(--space-1);
+}
+
+#div_id_remember {
+  display: none;
 }
