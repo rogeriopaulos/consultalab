@@ -1,0 +1,35 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load i18n %}
+{% load allauth %}
+
+{% block head_title %}
+  {% trans "Verify Your Email Address" %}
+{% endblock head_title %}
+{% block content %}
+  <div class="card-header">
+    <h2 class="card-title">Email Enviado</h2>
+    <p class="card-description">Verificação de email enviada com sucesso</p>
+  </div>
+  <div class="card-content">
+    <div class="notice">
+      <p>
+        {% blocktrans %}Enviamos um email de verificação para você.
+                Siga o link fornecido para finalizar o processo de cadastro.{% endblocktrans %}
+      </p>
+    </div>
+    <div class="verification-info">
+      <p>
+        {% blocktrans %}Se você não vir o email de verificação na sua caixa de entrada principal,
+                verifique sua pasta de spam. Entre em contato conosco se não receber o email de verificação
+                em alguns minutos.{% endblocktrans %}
+      </p>
+    </div>
+    <div class="help-text">
+      <p>
+        <strong>Dica:</strong> O email pode levar alguns minutos para chegar.
+        Verifique também sua pasta de spam ou lixo eletrônico.
+      </p>
+    </div>
+  </div>
+{% endblock content %}

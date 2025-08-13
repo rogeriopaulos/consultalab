@@ -1,0 +1,75 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load i18n %}
+{% load account %}
+{% load allauth %}
+
+{% block head_title %}
+  {% trans "Confirm Email Address" %}
+{% endblock head_title %}
+{% block content %}
+  <div class="card-header">
+    <h2 class="card-title">Confirmar Email</h2>
+    <p class="card-description">Confirme seu endereço de email para ativar sua conta</p>
+  </div>
+  <div class="card-content">
+    {% if confirmation %}
+      {% user_display confirmation.email_address.user as user_display %}
+      {% if can_confirm %}
+        <div class="notice">
+          <p>
+            {% blocktrans with confirmation.email_address.email as email %}Por favor, confirme que <strong>{{ email }}</strong> é um endereço de email para o usuário {{ user_display }}.{% endblocktrans %}
+          </p>
+        </div>
+        {% url 'account_confirm_email' confirmation.key as action_url %}
+        {% element form method="post" action=action_url tags="entrance,email_confirm" %}
+        {% slot actions %}
+        {% csrf_token %}
+        {{ redirect_field }}
+        {% element button type="submit" tags="prominent,email_confirm" %}
+        {% trans 'Confirmar Email' %}
+      {% endelement %}
+    {% endslot %}
+  {% endelement %}
+  <div class="help-text">
+    <p>Ao confirmar, você estará ativando sua conta e poderá fazer login normalmente.</p>
+  </div>
+{% else %}
+  <div class="verification-info">
+    <p>
+      {% blocktrans %}Não foi possível confirmar {{ email }} porque já está confirmado por uma conta diferente.{% endblocktrans %}
+    </p>
+  </div>
+  {% setvar login_link %}
+  <a href="{% url 'account_login' %}" class="text-decoration-none fw-bold">
+  {% endsetvar %}
+  {% setvar end_login_link %}
+</a>
+{% endsetvar %}
+<p class="signup-link">{{ login_link }}Fazer login{{ end_login_link }} com sua conta existente</p>
+{% endif %}
+{% else %}
+<div class="verification-info">
+  <p>{% blocktrans %}Este link de confirmação de email expirou ou é inválido.{% endblocktrans %}</p>
+</div>
+<div class="cl-divider">
+  <span>ou</span>
+</div>
+{% url 'account_email' as email_url %}
+{% setvar email_link %}
+<a href="{{ email_url }}" class="text-decoration-none fw-bold">
+{% endsetvar %}
+{% setvar end_email_link %}
+</a>
+{% endsetvar %}
+<p class="signup-link">{{ email_link }}Solicitar nova confirmação de email{{ end_email_link }}</p>
+{% setvar login_link %}
+<a href="{% url 'account_login' %}" class="text-decoration-none fw-bold">
+{% endsetvar %}
+{% setvar end_login_link %}
+</a>
+{% endsetvar %}
+<p class="signup-link">Ou {{ login_link }}voltar ao login{{ end_login_link }}</p>
+{% endif %}
+</div>
+{% endblock content %}

@@ -1,0 +1,46 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load i18n %}
+{% load allauth %}
+
+{% block head_title %}
+  {% trans "Verify Your Email Address" %}
+{% endblock head_title %}
+{% block content %}
+  <div class="card-header">
+    <h2 class="card-title">Verificar Email</h2>
+    <p class="card-description">É necessário verificar seu endereço de email para continuar</p>
+  </div>
+  <div class="card-content">
+    {% url 'account_email' as email_url %}
+    <div class="notice">
+      <p>
+        {% blocktrans %}Enviamos um email de verificação para você.
+                Por favor, clique no link dentro desse email para verificar sua conta.{% endblocktrans %}
+      </p>
+    </div>
+    <div class="verification-info">
+      <p>
+        {% blocktrans %}Se você não vir o email de verificação na sua caixa de entrada principal,
+                verifique sua pasta de spam. Caso não receba em alguns minutos, entre em contato conosco.{% endblocktrans %}
+      </p>
+    </div>
+    <div class="cl-divider">
+      <span>ou</span>
+    </div>
+    {% setvar link %}
+    <a href="{{ email_url }}" class="text-decoration-none fw-bold">
+    {% endsetvar %}
+    {% setvar end_link %}
+  </a>
+{% endsetvar %}
+<p class="signup-link">Precisa alterar seu email? {{ link }}Alterar endereço{{ end_link }}</p>
+{% setvar login_link %}
+<a href="{% url 'account_login' %}" class="text-decoration-none fw-bold">
+{% endsetvar %}
+{% setvar end_login_link %}
+</a>
+{% endsetvar %}
+<p class="signup-link">Já verificou seu email? {{ login_link }}Fazer login{{ end_login_link }}</p>
+</div>
+{% endblock content %}
