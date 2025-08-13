@@ -34,6 +34,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
 
         context["requisicoes"] = requisicao_object
         context["requisicoes_filter_form"] = requisicao_filter_form
+        context["requisicoes_total"] = requisicao_filter.qs.count()
 
         return context
 

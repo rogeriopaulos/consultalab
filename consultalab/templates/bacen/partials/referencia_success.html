@@ -1,13 +1,15 @@
 <span class="text-secondary">
   {{ referencia }}
   <a href="#"
+     class="reference-remove"
      data-bs-toggle="tooltip"
      data-bs-title="Remover referência"
      hx-post="{% url 'bacen:requisicao_bacen_referencia' requisicao_id %}?delete=true"
      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
      hx-target="#requisicao-{{ requisicao_id }}"
      hx-confirm="Você tem certeza que deseja remover esta referência?"
-     hx-swap="innerHTMLHTML">
-    <i class="bi bi-x-circle text-danger ms-2"></i>
+     hx-swap="innerHTML"
+     aria-label="Remover referência {{ referencia }}">
+    <i class="bi bi-x-circle"></i>
   </a>
 </span>

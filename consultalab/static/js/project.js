@@ -12,10 +12,13 @@ function processAll() {
     return;
   }
   const allRows = document.querySelectorAll('tr.requisicao-rows');
+  console.log(allRows)
 
   allRows.forEach(row => {
     const tr = row.closest('tr');
     if (tr) {
+      console.log(tr);
+
       const processLink = tr.querySelector('#process-row');
       if (processLink) {
         processLink.click();

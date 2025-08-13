@@ -5,20 +5,67 @@
     <div class="modal-header">
       <h5 class="modal-title">
         {% if tipo_requisicao == "1" %}
+          <i class="bi bi-person-badge me-2"></i>
           Consulta por CPF/CNPJ
         {% else %}
+          <i class="bi bi-key me-2"></i>
           Consulta por Chave Pix
         {% endif %}
       </h5>
+      <button type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"></button>
     </div>
     <form action="{% url 'bacen:requisicao_bacen' %}" method="post">
       <div class="modal-body">
-        {% csrf_token %}
-        {{ form|crispy }}
+        <div class="alert alert-info">
+          <div class="row">
+            <div class="col">
+              <i class="bi bi-info-circle me-2"></i>
+              <strong>Como funciona a consulta:</strong>
+            </div>
+          </div>
+          <div>
+            <div class="row">
+              <div class="col">
+                <p class="mb-0 mt-2">
+                  {% if tipo_requisicao == "1" %}
+                    • Insira um CPF ou CNPJ válido para consultar as chaves PIX associadas
+                    <br />
+                    • O sistema buscará todas as chaves registradas para este documento
+                  {% else %}
+                    • Insira uma chave PIX (email, telefone, CPF/CNPJ ou chave aleatória)
+                    <br />
+                    • O sistema buscará informações sobre esta chave específica
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title">
+              <i class="bi bi-gear me-2"></i>
+              Dados da Consulta
+            </h6>
+          </div>
+          <div class="card-body">
+            {% csrf_token %}
+            {{ form|crispy }}
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Adicionar</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i>
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-plus-circle me-1"></i>
+          Adicionar Consulta
+        </button>
       </div>
     </form>
   </div>

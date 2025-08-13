@@ -3,48 +3,51 @@
     <div class="modal-header">
       <h5 class="modal-title d-flex align-items-center">
         <span class="badge bg-primary me-2">{{ requisicao.get_tipo_requisicao_display }}</span>
+        <i class="bi bi-search me-2"></i>
         {{ requisicao.termo_busca }}
       </h5>
-      <button type="button"
-              class="btn btn-outline-secondary"
-              hx-get="{% url 'bacen:requisicao_bacen_relatorio_modal' requisicao.id %}"
-              hx-target="#modal-reports"
-              hx-trigger="click"
-              data-bs-toggle="modal"
-              data-bs-target="#modal-reports">
-        <i class="bi bi-printer"></i>
-        Relatório
-      </button>
+      <div class="d-flex gap-2">
+        <button type="button"
+                class="btn btn-outline-secondary"
+                hx-get="{% url 'bacen:requisicao_bacen_relatorio_modal' requisicao.id %}"
+                hx-target="#modal-reports"
+                hx-trigger="click"
+                data-bs-toggle="modal"
+                data-bs-target="#modal-reports">
+          <i class="bi bi-printer me-1"></i>
+          Relatório
+        </button>
+        <button type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Fechar"></button>
+      </div>
     </div>
     <div class="modal-body container">
-      <div class="row border border-2 border-secondary border-opacity-25 rounded-3 mb-3 p-2 d-flex align-items-center">
+      <div class="detail-info-card d-flex align-items-center">
         <div class="col-1 text-center">
-          <h1>
-            <i class="bi bi-bank2"></i>
-          </h1>
+          <i class="bi bi-bank2 detail-icon"></i>
         </div>
         <div class="col">
-          <div class="row fw-bold">{{ requisicao.get_tipo_requisicao_display }}</div>
-          <div class="row">
-            <div class="col g-0">
-              <i class="bi bi-search me-1"></i>
-              {{ requisicao.termo_busca }}
-            </div>
+          <div class="detail-title">{{ requisicao.get_tipo_requisicao_display }}</div>
+          <div class="detail-subtitle">
+            <i class="bi bi-search me-1"></i>
+            {{ requisicao.termo_busca }}
           </div>
-          <div class="row text-muted">Motivo: {{ requisicao.motivo }}</div>
+          <div class="detail-meta">Motivo: {{ requisicao.motivo }}</div>
           {% with status=requisicao.get_status %}
-            <div class="row badge {{ status.class|default:"text-bg-secondary" }}">
-              <div class="col">
+            <div class="mt-2">
+              <span class="badge {{ status.class|default:"text-bg-secondary" }}">
                 <i class="{{ status.icon }}"></i> {{ status.text }}
-              </div>
+              </span>
             </div>
           {% endwith %}
         </div>
         <div class="col d-flex flex-column align-items-end">
-          <span><i class="bi bi-calendar2 me-1"></i> {{ requisicao.created }}</span>
-          <span class="fw-light"><i class="bi bi-person-circle me-1"></i> {{ requisicao.user.name }}</span>
-          <span class="fw-medium">
-            <i class="bi bi-key-fill"></i> Total de chaves: {{ requisicao.chaves_pix.count }}
+          <span class="detail-meta"><i class="bi bi-calendar2 me-1"></i> {{ requisicao.created }}</span>
+          <span class="detail-meta"><i class="bi bi-person-circle me-1"></i> {{ requisicao.user.name }}</span>
+          <span class="detail-meta">
+            <i class="bi bi-key-fill me-1"></i> Total de chaves: {{ requisicao.chaves_pix.count }}
           </span>
         </div>
       </div>

@@ -5,107 +5,107 @@
 {% block title %}
   Home
 {% endblock title %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock extra_css %}
 {% block content %}
   {% if 'users.can_request_pix' in perms or 'users.can_request_ccs' in perms %}
+    <!-- Consultation Cards Section -->
     <div class="row row-cols-1 row-cols-md-2 g-4 mt-3 d-flex justify-content-center">
       {% if 'users.can_request_pix' in perms %}
-        <div class="col text-center">
-          <div class="border border-2 rounded p-3 shadow bg-light">
-            <div class="row">
-              <div class="col">
-                <img src="{% static 'images/pix_logo_icon.webp' %}"
-                     alt="Logo Pix"
-                     width="30"
-                     class="me-2" />
-                <span class="fw-bold">Consulta Pix</span>
-              </div>
+        <div class="col">
+          <div class="consultation-card">
+            <div class="consultation-card-header">
+              <img src="{% static 'images/pix_logo_icon.webp' %}"
+                   alt="Logo Pix"
+                   class="consultation-card-icon" />
+              <h3 class="consultation-card-title">Consulta Pix</h3>
             </div>
-            <div class="row mt-3">
-              <div class="col">
-                <button class="btn btn-dark me-2 w-25 fw-bold"
-                        hx-get="{% url 'bacen:cpf_cnpj' %}"
-                        hx-target="#modals-consulta"
-                        hx-trigger="click"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modals-consulta">CPF/CNPJ</button>
-                <button class="btn btn-secondary me-2 w-25 fw-bold"
-                        hx-get="{% url 'bacen:chave' %}"
-                        hx-target="#modals-consulta"
-                        hx-trigger="click"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modals-consulta">Chave</button>
-              </div>
+            <div class="consultation-card-actions">
+              <button class="btn btn-consultation btn-primary-custom"
+                      hx-get="{% url 'bacen:cpf_cnpj' %}"
+                      hx-target="#modals-consulta"
+                      hx-trigger="click"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modals-consulta"
+                      aria-label="Abrir formulário de consulta por CPF/CNPJ">
+                <i class="bi bi-person-badge me-1"></i>
+                CPF/CNPJ
+              </button>
+              <button class="btn btn-consultation btn-secondary-custom"
+                      hx-get="{% url 'bacen:chave' %}"
+                      hx-target="#modals-consulta"
+                      hx-trigger="click"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modals-consulta"
+                      aria-label="Abrir formulário de consulta por chave Pix">
+                <i class="bi bi-key me-1"></i>
+                Chave
+              </button>
             </div>
           </div>
         </div>
       {% endif %}
       {% if 'users.can_request_ccs' in perms %}
-        <div class="col text-center"
-             data-bs-toggle="tooltip"
-             data-bs-title="Em breve a consulta CCS estará disponível!">
-          <div class="border border-2 rounded p-3 shadow bg-light">
-            <div class="row">
-              <div class="col">
-                <img src="{% static 'images/img_card_ccs.png' %}"
-                     alt="Logo CCS"
-                     width="30"
-                     class="me-2" />
-                <span class="fw-bold">Consulta CCS</span>
-              </div>
+        <div class="col">
+          <div class="consultation-card disabled"
+               data-bs-toggle="tooltip"
+               data-bs-title="Em breve a consulta CCS estará disponível!"
+               aria-label="Consulta CCS - Em breve disponível">
+            <div class="consultation-card-header">
+              <img src="{% static 'images/img_card_ccs.png' %}"
+                   alt="Logo CCS"
+                   class="consultation-card-icon" />
+              <h3 class="consultation-card-title">Consulta CCS</h3>
             </div>
-            <div class="row mt-3">
-              <div class="col">
-                <button class="btn btn-outline-dark me-2 w-25 fw-bold"
-                        hx-get="{% url 'bacen:chave' %}"
-                        hx-target="#modals-consulta"
-                        hx-trigger="click"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modals-consulta"
-                        disabled>CPF/CNPJ</button>
-              </div>
+            <div class="consultation-card-actions">
+              <button class="btn btn-consultation btn-secondary-custom"
+                      disabled
+                      aria-label="Consulta CCS não disponível">
+                <i class="bi bi-person-badge me-1"></i>
+                CPF/CNPJ
+              </button>
             </div>
           </div>
         </div>
       {% endif %}
     </div>
-    <div class="row mt-4">
-      <div class="col">
-        <p class="text-secondary fw-light">
-          <i class="bi bi-info-circle-fill"></i>
-          Adicione uma consulta clicando no botão "CPF/CNPJ" ou "Chave" acima.
-          Você pode consultar CPF, CNPJ ou Chaves Pix.
-          As consultas são processadas em segundo plano e você pode acompanhar o status delas na tabela abaixo.
-        </p>
-      </div>
+    <!-- Information Section -->
+    <div class="info-section">
+      <p class="info-text">
+        <i class="bi bi-info-circle-fill info-icon"></i>
+        Adicione uma consulta clicando nos botões acima. Você pode consultar CPF, CNPJ ou Chaves Pix.
+        As consultas são processadas em segundo plano e você pode acompanhar o status delas na tabela abaixo.
+      </p>
     </div>
   {% else %}
-    <div class="row mt-4">
-      <div class="col">
-        <p class="text-secondary fw-light">
-          <i class="bi bi-exclamation-diamond-fill text-warning"></i>
-          Você não tem permissão para realizar consultas.
-          Entre em contato com o administrador do sistema para mais informações.
-        </p>
-      </div>
+    <!-- Warning Section -->
+    <div class="warning-section">
+      <p class="warning-text">
+        <i class="bi bi-exclamation-diamond-fill warning-icon"></i>
+        Você não tem permissão para realizar consultas.
+        Entre em contato com o administrador do sistema para mais informações.
+      </p>
     </div>
   {% endif %}
-  <div class="row border border-2 rounded p-3 shadow bg-light mb-4">
-    <div class="col">
-      <h5 class="mb-4 d-flex align-items-center justify-content-between">
-        <span class="fw-bold">
-          <i class="bi bi-clipboard-data me-2"></i>
-          Requisições
-        </span>
-        <span class="fs-6 fw-light text-secondary">Total: {{ requisicoes|length }}</span>
-      </h5>
-      <div class="row" id="form-filters">
-        <div class="col">
-          <form method="get" class="form-inline" id="requisicoes-filter-form">
-            {% crispy requisicoes_filter_form requisicoes_filter_form.helper %}
-          </form>
-        </div>
-      </div>
-      <table class="table" id="requisicoes-table">
+  <!-- Requests Section -->
+  <div class="requests-section">
+    <div class="requests-header">
+      <h2 class="requests-title">
+        <i class="bi bi-clipboard-data requests-title-icon"></i>
+        Requisições
+      </h2>
+      <span class="requests-count">Total: {{ requisicoes|length }}</span>
+    </div>
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <form method="get" id="requisicoes-filter-form">
+        {% crispy requisicoes_filter_form requisicoes_filter_form.helper %}
+      </form>
+    </div>
+    <!-- Table Section -->
+    <div class="requests-table-container">
+      <table class="table requests-table" id="requisicoes-table">
         <thead>
           <tr>
             <th scope="col">Termo</th>
@@ -129,7 +129,10 @@
                      hx-target="#modals-detalhes"
                      hx-trigger="click"
                      data-bs-toggle="modal"
-                     data-bs-target="#modals-detalhes">{{ requisicao.termo_busca }}</a>
+                     data-bs-target="#modals-detalhes"
+                     aria-label="Ver detalhes da consulta {{ requisicao.termo_busca }}">
+                    {{ requisicao.termo_busca }}
+                  </a>
                 {% else %}
                   {{ requisicao.termo_busca }}
                 {% endif %}
@@ -139,24 +142,28 @@
                   <span class="text-secondary">
                     {{ requisicao.referencia }}
                     <a href="#"
+                       class="reference-remove"
                        data-bs-toggle="tooltip"
                        data-bs-title="Remover referência"
                        hx-post="{% url 'bacen:requisicao_bacen_referencia' requisicao.id %}?delete=true"
                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                        hx-target="#requisicao-{{ requisicao.id }}"
                        hx-confirm="Você tem certeza que deseja remover esta referência?"
-                       hx-swap="innerHTMLHTML">
-                      <i class="bi bi-x-circle text-danger ms-2"></i>
+                       hx-swap="innerHTML"
+                       aria-label="Remover referência {{ requisicao.referencia }}">
+                      <i class="bi bi-x-circle"></i>
                     </a>
                   </span>
                 {% else %}
                   <div hx-target="this" hx-swap="outerHTML">
                     <a href="#"
                        hx-get="{% url 'bacen:requisicao_bacen_referencia_form' requisicao.id %}"
-                       class="text-decoration-none text-secondary d-flex align-items-center"
+                       class="reference-add"
                        data-bs-toggle="tooltip"
-                       data-bs-title="Adicionar uma referência que facilite a consulta e identificação desta requisição">
-                      <i class="bi bi-person-fill-add me-1"></i> <small>Adicionar</small>
+                       data-bs-title="Adicionar uma referência que facilite a consulta e identificação desta requisição"
+                       aria-label="Adicionar referência para esta requisição">
+                      <i class="bi bi-person-fill-add"></i>
+                      <small>Adicionar</small>
                     </a>
                   </div>
                 {% endif %}
@@ -167,83 +174,97 @@
               <td {% if not requisicao.get_status.finished %} hx-get="{% url 'bacen:requisicao_status' requisicao.id %}" hx-trigger="every 5s" hx-swap="outerHTML" {% endif %}
                   id="requisicao-{{ requisicao.id }}-status">
                 {% with status=requisicao.get_status %}
-                  <span class="badge {{ status.class|default:"text-bg-secondary" }}">
-                    <i class="{{ status.icon }}"></i> {{ status.text }}
+                  <span class="badge {{ status.class|default:"text-bg-secondary" }}"
+                        aria-label="Status: {{ status.text }}">
+                    <i class="{{ status.icon }}"></i>
+                    {{ status.text }}
                   </span>
                 {% endwith %}
               </td>
               <td>
-                {% if not requisicao.processada %}
-                  <a href="#"
-                     class="text-decoration-none text-info"
-                     hx-post="{% url 'bacen:processar_requisicao' requisicao.id %}"
-                     hx-target="#requisicao-{{ requisicao.id }}"
-                     hx-swap="innerHTML"
-                     hx-trigger="click"
-                     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                     id="process-row">
-                    <i class="bi bi-play-circle me-2"
+                <div class="d-flex gap-1">
+                  {% if not requisicao.processada %}
+                    <a href="#"
+                       class="action-link action-process"
+                       hx-post="{% url 'bacen:processar_requisicao' requisicao.id %}"
+                       hx-target="#requisicao-{{ requisicao.id }}"
+                       hx-swap="innerHTML"
+                       hx-trigger="click"
+                       hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                        data-bs-toggle="tooltip"
-                       data-bs-title="Processar consulta"></i>
-                  </a>
-                {% endif %}
-                <a href="#"
-                   class="text-decoration-none text-danger"
-                   hx-delete="{% url 'bacen:requisicao_bacen_remover' requisicao.id %}"
-                   hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                   hx-confirm="Você tem certeza que deseja remover esta requisição?"
-                   hx-target="#requisicao-{{ requisicao.id }}"
-                   hx-swap="outerHTML swap:1s">
-                  <i class="bi bi-trash me-2"
+                       data-bs-title="Processar consulta"
+                       aria-label="Processar consulta {{ requisicao.termo_busca }}"
+                       id="process-row">
+                      <i class="bi bi-play-circle"></i>
+                    </a>
+                  {% endif %}
+                  <a href="#"
+                     class="action-link action-delete"
+                     hx-delete="{% url 'bacen:requisicao_bacen_remover' requisicao.id %}"
+                     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                     hx-confirm="Você tem certeza que deseja remover esta requisição?"
+                     hx-target="#requisicao-{{ requisicao.id }}"
+                     hx-swap="outerHTML swap:1s"
                      data-bs-toggle="tooltip"
-                     data-bs-title="Remover consulta"></i>
-                </a>
+                     data-bs-title="Remover consulta"
+                     aria-label="Remover consulta {{ requisicao.termo_busca }}">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
               </td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
-      <div class="mt-4 text-right">
-        <nav aria-label="Page navigation">
-          <ul class="pagination pagination-sm justify-content-end">
-            {% if requisicoes.has_previous %}
-              <li class="page-item">
-                <a class="page-link" href="?page={{ requisicoes.previous_page_number }}">Anterior</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="?page={{ requisicoes.previous_page_number }}">{{ requisicoes.previous_page_number }}</a>
-              </li>
-            {% else %}
-              <li class="page-item disabled">
-                <a class="page-link" href="#">Anterior</a>
-              </li>
-            {% endif %}
-            <li class="page-item active">
-              <a class="page-link" href="#">{{ requisicoes.number }}</a>
+    </div>
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <nav aria-label="Navegação de páginas">
+        <ul class="pagination pagination-sm">
+          {% if requisicoes.has_previous %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ requisicoes.previous_page_number }}"
+                 aria-label="Página anterior">Anterior</a>
             </li>
-            {% if requisicoes.has_next %}
-              <li class="page-item">
-                <a class="page-link" href="?page={{ requisicoes.next_page_number }}">{{ requisicoes.next_page_number }}</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="?page={{ requisicoes.next_page_number }}">Próximo</a>
-              </li>
-            {% else %}
-              <li class="page-item disabled">
-                <a class="page-link" href="#">Próximo</a>
-              </li>
-            {% endif %}
-          </ul>
-        </nav>
-      </div>
-      <div class="mt-4 text-center">
-        <button class="btn btn-info"
-                id="process-all"
-                data-bs-toggle="tooltip"
-                data-bs-title="Processar todas as consultas pendentes...">
-          <i class="bi bi-play-circle me-2"></i> Processar em lote
-        </button>
-      </div>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ requisicoes.previous_page_number }}">{{ requisicoes.previous_page_number }}</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <span class="page-link" aria-label="Página anterior indisponível">Anterior</span>
+            </li>
+          {% endif %}
+          <li class="page-item active">
+            <span class="page-link" aria-current="page">{{ requisicoes.number }}</span>
+          </li>
+          {% if requisicoes.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ requisicoes.next_page_number }}">{{ requisicoes.next_page_number }}</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ requisicoes.next_page_number }}"
+                 aria-label="Próxima página">Próximo</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <span class="page-link" aria-label="Próxima página indisponível">Próximo</span>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    <!-- Batch Process -->
+    <div class="batch-process-container">
+      <button class="btn btn-batch-process"
+              id="process-all"
+              data-bs-toggle="tooltip"
+              data-bs-title="Processar todas as consultas pendentes"
+              aria-label="Processar todas as consultas pendentes em lote">
+        <i class="bi bi-play-circle"></i>
+        Processar em lote
+      </button>
     </div>
   </div>
   <!-- Modal Consultas -->
