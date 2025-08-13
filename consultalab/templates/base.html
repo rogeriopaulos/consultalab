@@ -74,52 +74,74 @@
         </div>
       {% endif %}
       <div class="mb-1">
-        <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
+        <nav class="navbar navbar-expand-md">
           <div class="container-fluid">
-            <button class="navbar-toggler navbar-toggler-right"
+            <a class="navbar-brand"
+               href="{% url 'core:home' %}"
+               aria-label="Ir para página inicial">
+              <img src="{% static 'images/consultalab_logo.png' %}"
+                   alt="Logo ConsultaLab"
+                   loading="lazy" />
+              <span id="cl-text-logo">Consulta<strong>LAB</strong></span>
+            </a>
+            <button class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent"
                     aria-expanded="false"
-                    aria-label="Toggle navigation">
+                    aria-label="Alternar navegação">
               <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'core:home' %}">
-              <img src="{% static 'images/consultalab_logo.png' %}"
-                   alt="Logo LAB-LD"
-                   width="50" />
-              <span id="cl-text-logo">Consulta<strong>LAB</strong></span>
-            </a>
-            <div class="collapse navbar-collapse d-flex justify-content-between"
-                 id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                  <a class="nav-link" href="{% url 'core:home' %}">
-                    <i class="bi bi-house"></i> Home <span class="visually-hidden">(current)</span>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto">
+                <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                  <a class="nav-link"
+                     href="{% url 'core:home' %}"
+                     aria-label="Página inicial">
+                    <i class="bi bi-house-fill"></i>
+                    Home
+                    {% if request.resolver_match.url_name == 'home' %}<span class="visually-hidden">(página atual)</span>{% endif %}
                   </a>
                 </li>
                 {% if request.user.is_authenticated %}
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users:detail' request.user.pk %}">
-                      <i class="bi bi-person"></i> Minha Conta
+                  <li class="nav-item {% if request.resolver_match.url_name == 'user_detail' %}active{% endif %}">
+                    <a class="nav-link"
+                       href="{% url 'users:detail' request.user.pk %}"
+                       aria-label="Acessar minha conta">
+                      <i class="bi bi-person-circle"></i>
+                      Minha Conta
                     </a>
                   </li>
                   {% if 'users.access_admin_section' in perms %}
-                    <li class="nav-item">
-                      <a class="nav-link" href="{% url 'audit:admin_section' %}">
-                        <i class="bi bi-window"></i> Admin
+                    <li class="nav-item {% if request.resolver_match.url_name == 'admin_section' %}active{% endif %}">
+                      <a class="nav-link"
+                         href="{% url 'audit:admin_section' %}"
+                         aria-label="Acessar seção administrativa">
+                        <i class="bi bi-gear-fill"></i>
+                        Admin
                       </a>
                     </li>
                   {% endif %}
                 {% endif %}
               </ul>
-              <ul class="navbar-nav mr-auto">
+              <ul class="navbar-nav user-menu">
                 {% if request.user.is_authenticated %}
-                  <li class="nav-item me-5">
-                    {# URL provided by django-allauth/account/urls.py #}
-                    <a class="nav-link" href="{% url 'account_logout' %}">
-                      {% translate "Sign Out" %} <i class="bi bi-box-arrow-right"></i>
+                  <li class="nav-item">
+                    <a class="nav-link logout-link"
+                       href="{% url 'account_logout' %}"
+                       aria-label="Sair da conta">
+                      {% translate "Sair" %}
+                      <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                  </li>
+                {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'account_login' %}"
+                       aria-label="Fazer login">
+                      <i class="bi bi-box-arrow-in-right"></i>
+                      Entrar
                     </a>
                   </li>
                 {% endif %}
@@ -169,6 +191,32 @@
           {% endblock content %}
         {% endblock main %}
       </div>
+      <!-- Footer -->
+      <footer class="footer mt-5">
+        <div class="container">
+          <div class="row align-items-center py-4">
+            <div class="col-md-6">
+              <div class="d-flex align-items-center">
+                <img src="{% static 'images/consultalab_logo.png' %}"
+                     alt="ConsultaLab"
+                     width="24"
+                     height="24"
+                     class="me-2" />
+                <span class="footer-brand">ConsultaLab</span>
+                <small class="text-muted ms-2">v1.0</small>
+              </div>
+            </div>
+            <div class="col-md-6 text-md-end text-muted">
+              Github
+              <a href="https://github.com/rogeriopaulos/consultalab"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                <i class="bi bi-github text-dark"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     {% endblock body %}
     <!-- /container -->
     {% block modal %}
