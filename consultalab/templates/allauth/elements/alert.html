@@ -1,7 +1,22 @@
 {% load i18n %}
 {% load allauth %}
 
-<div class="alert alert-error">
-  {% slot message %}
-{% endslot %}
+<!-- Toast Alert -->
+<div class="toast align-items-center border-0 text-bg-danger"
+     role="alert"
+     aria-live="assertive"
+     aria-atomic="true"
+     data-bs-autohide="true"
+     data-bs-delay="5000">
+  <div class="d-flex">
+    <div class="toast-body">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {% slot message %}
+    {% endslot %}
+  </div>
+  <button type="button"
+          class="btn-close btn-close-white me-2 m-auto"
+          data-bs-dismiss="toast"
+          aria-label="Close"></button>
+</div>
 </div>
