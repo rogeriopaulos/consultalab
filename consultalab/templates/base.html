@@ -105,7 +105,7 @@
                   </a>
                 </li>
                 {% if request.user.is_authenticated %}
-                  <li class="nav-item {% if request.resolver_match.url_name == 'user_detail' %}active{% endif %}">
+                  <li class="nav-item {% if request.resolver_match.url_name == 'detail' %}active{% endif %}">
                     <a class="nav-link"
                        href="{% url 'users:detail' request.user.pk %}"
                        aria-label="Acessar minha conta">
