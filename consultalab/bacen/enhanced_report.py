@@ -1,8 +1,10 @@
 import io
+import logging
 from datetime import UTC
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
+from pathlib import Path
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -156,6 +158,41 @@ class EnhancedPixReportGenerator:
         # CABEÇALHO INSTITUCIONAL
         y_start = self.height
 
+        # Logo e nome ConsultaLAB
+        try:
+            # Caminho para a logo
+            base_dir = Path(__file__).parent.parent
+            logo_path = base_dir / "static" / "images" / "consultalab_logo.png"
+
+            # Verificar se o arquivo existe
+            if logo_path.exists():
+                # Inserir a logo (ajustar tamanho conforme necessário)
+                logo_width = 40
+                logo_height = 40
+                logo_x = (self.width / 2) - 80  # Posição à esquerda do centro
+                logo_y = y_start - 70
+
+                # Desenhar a logo com transparência preservada
+                canvas.drawImage(
+                    logo_path,
+                    logo_x,
+                    logo_y,
+                    width=logo_width,
+                    height=logo_height,
+                    mask="auto",  # Preserva transparência
+                )
+
+                # Texto "ConsultaLAB" ao lado da logo
+                canvas.setFont("Helvetica-Bold", 16)
+                canvas.setFillColor(self.primary_color)
+                text_x = logo_x + logo_width + 10  # 10px de espaçamento da logo
+                # Centralizar verticalmente com a logo
+                text_y = logo_y + (logo_height / 2) - 6
+                canvas.drawString(text_x, text_y, "ConsultaLAB")
+        except (FileNotFoundError, OSError) as e:
+            # Em caso de erro ao carregar a logo, apenas pular esta parte
+            logging.warning("Erro ao carregar logo: %s", e)
+
         # Título do relatório
         canvas.setFont("Helvetica-Bold", 12)
         canvas.setFillColor(colors.black)
@@ -163,12 +200,12 @@ class EnhancedPixReportGenerator:
             report_title = "RELATÓRIO DE CONSULTA PIX - DETALHADO"
         else:
             report_title = "RELATÓRIO DE CONSULTA PIX - RESUMIDO"
-        canvas.drawCentredString(self.width / 2, y_start - 80, report_title)
+        canvas.drawCentredString(self.width / 2, y_start - 100, report_title)
 
         # Linha decorativa
         canvas.setStrokeColor(self.primary_color)
         canvas.setLineWidth(2)
-        canvas.line(40, y_start - 95, self.width - 40, y_start - 95)
+        canvas.line(40, y_start - 115, self.width - 40, y_start - 115)
 
         # RODAPÉ
         canvas.setFont("Helvetica", 8)
@@ -412,8 +449,8 @@ class EnhancedPixReportGenerator:
             for i, chave in enumerate(chaves_pix):
                 # Título da chave
                 chave_num = i + 1
-                chave_valor = chave.get('chave', 'N/A')
-                chave_status = chave.get('status', 'N/A')
+                chave_valor = chave.get("chave", "N/A")
+                chave_status = chave.get("status", "N/A")
                 chave_title = (
                     f"CHAVE {chave_num}: {chave_valor} - Status: {chave_status}"
                 )
