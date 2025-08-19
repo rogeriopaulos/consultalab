@@ -1,4 +1,5 @@
 import json
+import logging
 
 from allauth.account.forms import AddEmailForm
 from allauth.account.forms import ChangePasswordForm
@@ -292,6 +293,77 @@ class CustomEmailView(AllauthEmailView):
         if self.request.headers.get("HX-Request"):
             return None
         return super().get_success_url()
+
+    def post(self, request, *args, **kwargs):
+        # Log para debug
+        logging.info(
+            "CustomEmailView.post called - HTMX: %s",
+            request.headers.get("HX-Request"),
+        )
+        logging.info("POST data: %s", request.POST)
+
+        # Se for uma requisição HTMX, processar de forma customizada
+        if request.headers.get("HX-Request"):
+            # Determinar qual ação está sendo executada
+            action_add = request.POST.get("action_add")
+            action_primary = request.POST.get("action_primary")
+            action_send = request.POST.get("action_send")
+            action_remove = request.POST.get("action_remove")
+
+            logging.info(
+                "Actions - add: %s, primary: %s, send: %s, remove: %s",
+                action_add,
+                action_primary,
+                action_send,
+                action_remove,
+            )
+
+            # Processar a requisição usando o método da classe pai
+            response = super().post(request, *args, **kwargs)
+
+            logging.info(
+                "Response status: %s",
+                getattr(response, "status_code", "No status"),
+            )
+
+            # Se a operação foi bem-sucedida (normalmente resulta em redirect)
+            if hasattr(response, "status_code") and response.status_code in [302, 200]:
+                # Determinar a mensagem baseada na ação
+                if action_add:
+                    message = "E-mail adicionado com sucesso!"
+                elif action_primary:
+                    message = "E-mail primário definido com sucesso!"
+                elif action_send:
+                    message = "E-mail de verificação reenviado com sucesso!"
+                elif action_remove:
+                    message = "E-mail removido com sucesso!"
+                else:
+                    message = "Operação realizada com sucesso!"
+
+                # Criar trigger com mensagem de sucesso
+                trigger_data = json.dumps(
+                    {
+                        "showMessageCreatedUser": {
+                            "message": message,
+                            "type": "success",
+                        },
+                    },
+                )
+
+                # Renderizar a aba de e-mail atualizada
+                response = render(
+                    request,
+                    "users/detail/tabs/email.html",
+                    {"email_form": AddEmailForm(user=request.user)},
+                )
+                response["HX-Trigger"] = trigger_data
+                return response
+
+            # Se houve erro, renderizar com os erros
+            return response
+
+        # Para requisições não-HTMX, usar comportamento padrão
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         response = super().form_valid(form)
