@@ -1,0 +1,14 @@
+{{ user.name }}
+<button type="button"
+        class="btn btn-sm"
+        id="cl-editNameBtn"
+        hx-get="{% url 'users:name_edit' %}"
+        hx-target="#name-container"
+        hx-swap="innerHTML">
+  <i class="bi bi-pencil pb-1"
+     data-bs-toggle="tooltip"
+     data-bs-placement="top"
+     data-bs-title="Alterar nome.">
+  </i>
+  Alterar
+</button>

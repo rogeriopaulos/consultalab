@@ -5,6 +5,7 @@ from .views import user_create_view
 from .views import user_detail_modal_view
 from .views import user_detail_view
 from .views import user_email_view
+from .views import user_name_edit_view
 from .views import user_profile_view
 from .views import user_redirect_view
 from .views import user_security_view
@@ -28,6 +29,7 @@ partials = [
     path("perfil/", view=user_profile_view, name="profile"),
     path("email/", view=user_email_view, name="email_tab"),
     path("seguranca/", view=user_security_view, name="security_tab"),
+    path("editar-nome/", view=user_name_edit_view, name="name_edit"),
 ]
 
 urlpatterns += partials

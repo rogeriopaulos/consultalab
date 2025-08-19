@@ -5,13 +5,11 @@ from allauth.account.forms import ChangePasswordForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import QuerySet
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
@@ -92,10 +90,9 @@ class UserCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 user_create_view = UserCreateView.as_view()
 
 
-class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     fields = ["name"]
-    success_message = _("Information successfully updated")
 
     def get_success_url(self) -> str:
         assert self.request.user.is_authenticated  # type guard
@@ -105,8 +102,67 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         assert self.request.user.is_authenticated  # type guard
         return self.request.user
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Se for uma requisição HTMX, retornar apenas o conteúdo atualizado
+        if self.request.headers.get("HX-Request"):
+            # Criar trigger com mensagem de sucesso usando JSON
+            msg = f'Nome alterado para "{self.object.name}" com sucesso!'
+            trigger_data = json.dumps(
+                {
+                    "showMessageCreatedUser": {
+                        "message": msg,
+                        "type": "success",
+                    },
+                },
+            )
+
+            response = render(
+                self.request,
+                "users/detail/partials/name_display.html",
+                {"user": self.object},
+            )
+            response["HX-Trigger"] = trigger_data
+            return response
+
+        return response
+
+    def form_invalid(self, form):
+        # Se for uma requisição HTMX, retornar o formulário com erros
+        if self.request.headers.get("HX-Request"):
+            return render(
+                self.request,
+                "users/detail/partials/name_edit.html",
+                {"user": self.get_object(), "form": form},
+            )
+
+        return super().form_invalid(form)
+
 
 user_update_view = UserUpdateView.as_view()
+
+
+class UserNameEditView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        # Se for um cancelamento, retornar a view normal do nome
+        if request.GET.get("cancel"):
+            return render(
+                request,
+                "users/detail/partials/name_display.html",
+                {"user": user},
+            )
+
+        return render(
+            request,
+            "users/detail/partials/name_edit.html",
+            {"user": user},
+        )
+
+
+user_name_edit_view = UserNameEditView.as_view()
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -169,6 +225,19 @@ class UserProfileView(LoginRequiredMixin, View):
         user = request.user
         if not user:
             return HttpResponse(status=404)
+
+        # Se for uma requisição HTMX para o seletor #name-display,
+        # retornar apenas a parte do nome
+        if (
+            request.headers.get("HX-Request")
+            and request.headers.get("HX-Target") == "name-container"
+        ):
+            return render(
+                request,
+                "users/detail/partials/name_display.html",
+                {"user": user},
+            )
+
         return render(
             request,
             "users/detail/tabs/profile.html",

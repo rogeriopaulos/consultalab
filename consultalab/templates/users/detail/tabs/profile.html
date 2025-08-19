@@ -5,51 +5,54 @@
      tabindex="0">
   <div class="row">
     <div class="col-4 fw-bold text-secondary">
-      <i class="fa-solid fa-signature"></i> Nome completo:
+      <i class="bi bi-person-badge"></i> Nome completo:
     </div>
-    <div class="col fw-light">
-      {{ user.name }}
-      <button type="button"
-              class="btn btn-sm"
-              id="sw-editNameBtn"
-              data-bs-toggle="modal"
-              data-bs-target="#editNameModal">
-        <i class="fa-solid fa-rotate pb-1"
-           data-bs-toggle="tooltip"
-           data-bs-placement="top"
-           data-bs-title="Alterar nome.">
-        </i>
-        Alterar
-      </button>
+    <div class="col fw-light" id="name-container">
+      <div id="name-display">
+        {{ user.name }}
+        <button type="button"
+                class="btn btn-sm"
+                id="cl-editNameBtn"
+                hx-get="{% url 'users:name_edit' %}"
+                hx-target="#name-container"
+                hx-swap="innerHTML">
+          <i class="bi bi-pencil pb-1"
+             data-bs-toggle="tooltip"
+             data-bs-placement="top"
+             data-bs-title="Alterar nome.">
+          </i>
+          Alterar
+        </button>
+      </div>
     </div>
   </div>
   <div class="row mt-3">
     <div class="col-4 fw-bold text-secondary">
-      <i class="fa-solid fa-keyboard"></i> Nome de usuário:
+      <i class="bi bi-envelope"></i> Nome de usuário:
     </div>
     <div class="col fw-light">{{ user.email|default:"-----" }}</div>
   </div>
   <div class="row mt-3">
     <div class="col-4 fw-bold text-secondary">
-      <i class="fa-regular fa-calendar"></i> Cadastrado em:
+      <i class="bi bi-calendar"></i> Cadastrado em:
     </div>
     <div class="col fw-light">{{ user.date_joined }}</div>
   </div>
   <div class="row mt-3">
     <div class="col-4 fw-bold text-secondary">
-      <i class="fa-solid fa-building"></i> Lotação:
+      <i class="bi bi-building"></i> Lotação:
     </div>
     <div class="col fw-light">{{ user.department.name }}</div>
   </div>
   <div class="row mt-3">
     <div class="col-4 fw-bold text-secondary">
-      <i class="fa-solid fa-right-to-bracket"></i> Último acesso:
+      <i class="bi bi-clock"></i> Último acesso:
     </div>
     <div class="col fw-light">{{ user.last_login|default:"-----" }}</div>
   </div>
   <div class="row mt-3">
     <div class="col-4 fw-bold text-secondary">
-      <i class="fa-solid fa-user-group"></i> Permissões:
+      <i class="bi bi-people"></i> Permissões:
     </div>
     <div class="col fw-light">
       {% for perm in user.user_permissions.all %}
