@@ -1,0 +1,112 @@
+{% load static %}
+
+<style>
+  .bulk-result-table {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+</style>
+<div class="modal-dialog modal-lg modal-dialog-centered"
+     id="modal-bulk-request-result">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">
+        <i class="bi bi-check-circle me-2"></i>
+        Resultado da Importação
+      </h5>
+      <button type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"></button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card text-center bg-primary text-white">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+              <h3 class="mb-2">{{ resultado.total_linhas }}</h3>
+              <p class="card-text">Linhas Processadas</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center bg-success text-white">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+              <h3 class="mb-2">{{ resultado.requisicoes_validas }}</h3>
+              <p class="card-text">Requisições Criadas</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center bg-danger text-white">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+              <h3 class="mb-2">{{ resultado.requisicoes_invalidas }}</h3>
+              <p class="card-text">Linhas com Erro</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% if resultado.requisicoes_validas > 0 %}
+        <div class="mt-4">
+          <div class="alert alert-success">
+            <div class="row">
+              <div class="col">
+                <i class="bi bi-check-circle me-2"></i>
+                <strong>Sucesso!</strong>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                {{ resultado.requisicoes_validas }} requisição{{ resultado.requisicoes_validas|pluralize:"ões" }}
+                {{ resultado.requisicoes_validas|pluralize:"foi,foram" }} criada{{ resultado.requisicoes_validas|pluralize:",s" }} com sucesso.
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      {% if resultado.erros %}
+        <div class="mt-4">
+          <h6 class="text-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Linhas com problemas:
+          </h6>
+          <div class="table-responsive bulk-result-table">
+            <table class="table table-sm table-striped">
+              <thead class="table-dark">
+                <tr>
+                  <th>Linha</th>
+                  <th>Conteúdo</th>
+                  <th>Erro</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for erro in resultado.erros %}
+                  <tr>
+                    <td>{{ erro.linha }}</td>
+                    <td>
+                      <code>{{ erro.conteudo|truncatechars:50 }}</code>
+                    </td>
+                    <td>
+                      <small class="text-danger">{{ erro.erro }}</small>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    <div class="modal-footer">
+      <button type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              hx-get="{% url 'core:home' %}"
+              hx-target="body"
+              hx-push-url="true">
+        <i class="bi bi-check me-1"></i>
+        Concluir
+      </button>
+    </div>
+  </div>
+</div>

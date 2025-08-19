@@ -58,6 +58,16 @@ htmx_urlpatterns = [
         views.ReportTypeModalView.as_view(),
         name="requisicao_bacen_relatorio_modal",
     ),
+    path(
+        "bulk-request/",
+        views.BulkRequestFormView.as_view(),
+        name="bulk_request_form",
+    ),
+    path(
+        "bulk-request/upload/",
+        views.BulkRequestUploadView.as_view(),
+        name="bulk_request_upload",
+    ),
 ]
 
 urlpatterns += htmx_urlpatterns
