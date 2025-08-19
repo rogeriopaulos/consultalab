@@ -10,6 +10,7 @@ flower==2.0.1  # https://github.com/mher/flower
 uvicorn[standard]==0.34.2  # https://github.com/encode/uvicorn
 uvicorn-worker==0.3.0  # https://github.com/Kludex/uvicorn-worker
 reportlab==4.4.1  # https://docs.reportlab.com
+validate-docbr==1.11.1  # https://github.com/alvarofpp/validate-docbr
 
 # Django
 # ------------------------------------------------------------------------------

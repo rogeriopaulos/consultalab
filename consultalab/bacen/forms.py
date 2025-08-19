@@ -5,6 +5,8 @@ from crispy_forms.layout import Field
 from crispy_forms.layout import Layout
 from crispy_forms.layout import Row
 from django import forms
+from validate_docbr import CNPJ
+from validate_docbr import CPF
 
 from consultalab.bacen.models import RequisicaoBacen
 
@@ -33,17 +35,55 @@ class RequisicaoBacenForm(forms.ModelForm):
             "motivo": "Motivo (obrigatório)",
         }
         help_texts = {
+            "termo_busca": (
+                "Para tipos Pix CPF/CNPJ e CCS CPF/CNPJ, informe um CPF (11 dígitos) "
+                "ou CNPJ (14 dígitos) válido."
+            ),
             "motivo": "BO, IPL, Nº Caso LAB-LD, RIF, Processo Judicial...",
         }
 
     def clean(self):
+        # Constantes para tamanhos de documentos
+        cpf_length = 11
+        cnpj_length = 14
+
+        # Mensagens de erro
+        msg_required = "O termo de busca é obrigatório para este tipo de requisição."
+        msg_numeric_only = "O termo de busca deve conter apenas números."
+        msg_invalid_cpf = "O termo de busca deve ser um CPF válido."
+        msg_invalid_cnpj = "O termo de busca deve ser um CNPJ válido."
+        msg_invalid_length = (
+            "O termo de busca deve ter 11 dígitos (CPF) ou 14 dígitos (CNPJ)."
+        )
+
         cleaned_data = super().clean()
         termo_busca = cleaned_data.get("termo_busca")
         tipo_requisicao = cleaned_data.get("tipo_requisicao")
 
-        if tipo_requisicao == "1" and not termo_busca.isdigit():
-            message = "O termo de busca deve ser um CPF/CNPJ válido."
-            raise forms.ValidationError(message)
+        if tipo_requisicao in ["1", "3"]:  # Pix CPF/CNPJ ou CCS CPF/CNPJ
+            if not termo_busca:
+                raise forms.ValidationError(msg_required)
+
+            # Remove caracteres especiais, mantendo apenas dígitos
+            termo_limpo = "".join(filter(str.isdigit, termo_busca))
+
+            if not termo_limpo:
+                raise forms.ValidationError(msg_numeric_only)
+
+            # Verifica se é CPF (11 dígitos) ou CNPJ (14 dígitos)
+            if len(termo_limpo) == cpf_length:
+                cpf_validator = CPF()
+                if not cpf_validator.validate(termo_limpo):
+                    raise forms.ValidationError(msg_invalid_cpf)
+            elif len(termo_limpo) == cnpj_length:
+                cnpj_validator = CNPJ()
+                if not cnpj_validator.validate(termo_limpo):
+                    raise forms.ValidationError(msg_invalid_cnpj)
+            else:
+                raise forms.ValidationError(msg_invalid_length)
+
+            # Atualiza o campo com o valor limpo (apenas números)
+            cleaned_data["termo_busca"] = termo_limpo
 
         return cleaned_data
 
