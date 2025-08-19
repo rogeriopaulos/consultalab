@@ -427,3 +427,62 @@ body {
     font-size: var(--font-size-base);
   }
 }
+
+/* Logout Confirmation Styles */
+.logout-confirmation-content {
+  text-align: center;
+  padding: var(--space-6) 0;
+}
+
+.logout-icon {
+  margin-bottom: var(--space-4);
+}
+
+.logout-icon i {
+  font-size: 3rem;
+}
+
+.logout-message {
+  margin-bottom: var(--space-6);
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
+.logout-message strong {
+  color: var(--gray-800);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Logout button styling */
+.btn-danger {
+  background-color: var(--red-500);
+  border-color: var(--red-500);
+  color: var(--white);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-danger:hover {
+  background-color: var(--red-600);
+  border-color: var(--red-600);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+.btn-outline-secondary {
+  border-color: var(--gray-300);
+  color: var(--gray-700);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--gray-50);
+  border-color: var(--gray-400);
+  color: var(--gray-800);
+  transform: translateY(-1px);
+}
