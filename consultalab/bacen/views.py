@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.http import FileResponse
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
@@ -15,6 +16,7 @@ from django.views.generic import View
 
 from consultalab.bacen.enhanced_report import EnhancedPixReportGenerator
 from consultalab.bacen.filters import RequisicaoBacenFilter
+from consultalab.bacen.forms import BulkRequestForm
 from consultalab.bacen.forms import RequisicaoBacenFilterFormHelper
 from consultalab.bacen.forms import RequisicaoBacenForm
 from consultalab.bacen.helpers import LIST_PAGE_SIZE
@@ -296,4 +298,57 @@ class UpdateReferenciaView(LoginRequiredMixin, View):
                 "referencia": referencia,
                 "requisicao_id": requisicao.id,
             },
+        )
+
+
+class BulkRequestFormView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        form = BulkRequestForm()
+        return render(
+            request,
+            "bacen/partials/bulk_request_modal.html",
+            {"form": form},
+        )
+
+
+class BulkRequestUploadView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        form = BulkRequestForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            try:
+                requisicoes_validas, requisicoes_invalidas = form.process_file(
+                    request.user,
+                )
+
+                # Salva as requisições válidas no banco de dados
+                requisicoes_criadas = []
+                with transaction.atomic():
+                    for req_data in requisicoes_validas:
+                        requisicao = RequisicaoBacen.objects.create(**req_data)
+                        requisicoes_criadas.append(requisicao)
+
+                # Prepara dados para o template de resultado
+                resultado = {
+                    "total_linhas": len(requisicoes_validas)
+                    + len(requisicoes_invalidas),
+                    "requisicoes_validas": len(requisicoes_validas),
+                    "requisicoes_invalidas": len(requisicoes_invalidas),
+                    "requisicoes_criadas": requisicoes_criadas,
+                    "erros": requisicoes_invalidas,
+                }
+
+                return render(
+                    request,
+                    "bacen/partials/bulk_request_result.html",
+                    {"resultado": resultado},
+                )
+
+            except (ValueError, TypeError, AttributeError) as e:
+                form.add_error("arquivo_txt", f"Erro ao processar arquivo: {e!s}")
+
+        return render(
+            request,
+            "bacen/partials/bulk_request_modal.html",
+            {"form": form},
         )

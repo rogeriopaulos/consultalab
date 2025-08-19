@@ -1,0 +1,113 @@
+{% load crispy_forms_tags %}
+
+<div class="modal-dialog modal-lg modal-dialog-centered"
+     id="modal-bulk-request">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">
+        <i class="bi bi-file-earmark-text me-2"></i>
+        Importação em Lote - Consulta Pix
+      </h5>
+      <button type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"></button>
+    </div>
+    <form hx-post="{% url 'bacen:bulk_request_upload' %}"
+          hx-target="#modal-bulk-request"
+          hx-encoding="multipart/form-data">
+      <div class="modal-body">
+        <div class="alert alert-info">
+          <div class="row">
+            <div class="col">
+              <i class="bi bi-info-circle me-2"></i>
+              <strong>Instruções para importação em lote:</strong>
+            </div>
+          </div>
+          <div class="mt-2">
+            <p class="mb-2">
+              <strong>Formato do arquivo:</strong>
+            </p>
+            <ul class="mb-2">
+              <li>
+                Arquivo deve ser do tipo <strong>TXT</strong>
+              </li>
+              <li>Cada linha representa uma requisição</li>
+              <li>
+                Campos separados por <strong>vírgula (,)</strong> ou <strong>ponto e vírgula (;)</strong>
+              </li>
+              <li>
+                Máximo de <strong>5MB</strong> por arquivo
+              </li>
+            </ul>
+            <p class="mb-2">
+              <strong>Campos obrigatórios por linha:</strong>
+            </p>
+            <ol class="mb-2">
+              <li>
+                <strong>tipo_requisicao:</strong> 1 (Pix CPF/CNPJ) ou 2 (Pix Chave)
+              </li>
+              <li>
+                <strong>termo_busca:</strong> CPF/CNPJ (apenas números) ou Chave Pix
+              </li>
+              <li>
+                <strong>motivo:</strong> BO, IPL, Nº Caso LAB-LD, RIF, Processo Judicial...
+              </li>
+              <li>
+                <strong>referencia:</strong> Campo opcional para referência interna
+              </li>
+            </ol>
+            <p class="mb-2">
+              <strong>Exemplos de linhas válidas:</strong>
+            </p>
+            <div class="bg-light p-2 rounded mb-2">
+              <code>1,12345678901,BO 123/2023,REF001</code>
+              <br />
+              <code>1,12345678000199,IPL 456/2023</code>
+              <br />
+              <code>2,usuario@email.com,Caso LAB-LD 789,REF002</code>
+              <br />
+              <code>2,11987654321,RIF 101112</code>
+            </div>
+            <div class="alert alert-warning">
+              <div class="row">
+                <div class="col">
+                  <i class="bi bi-exclamation-triangle me-2"></i>
+                  <strong>Importante:</strong>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  Para tipo 1 (CPF/CNPJ), o sistema validará se o documento é válido.
+                  Linhas com CPF/CNPJ inválidos serão rejeitadas.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title">
+              <i class="bi bi-upload me-2"></i>
+              Selecionar Arquivo
+            </h6>
+          </div>
+          <div class="card-body">
+            {% csrf_token %}
+            {{ form|crispy }}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i>
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-upload me-1"></i>
+          Processar Arquivo
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
