@@ -2,6 +2,8 @@ import json
 
 from allauth.account.forms import AddEmailForm
 from allauth.account.forms import ChangePasswordForm
+from allauth.account.views import EmailView as AllauthEmailView
+from allauth.account.views import PasswordChangeView as AllauthPasswordChangeView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -279,3 +281,135 @@ class UserSecurityView(LoginRequiredMixin, View):
 
 
 user_security_view = UserSecurityView.as_view()
+
+
+class CustomEmailView(AllauthEmailView):
+    """View customizada para gerenciar e-mails que retorna o conteúdo
+    da aba de e-mail"""
+
+    def get_success_url(self):
+        # Se for uma requisição HTMX, não redirecionamos
+        if self.request.headers.get("HX-Request"):
+            return None
+        return super().get_success_url()
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Se for uma requisição HTMX, renderizar a aba de e-mail atualizada
+        if self.request.headers.get("HX-Request"):
+            # Determinar a mensagem de sucesso baseada na ação
+            action_add = self.request.POST.get("action_add")
+            if action_add:
+                message = "E-mail adicionado com sucesso!"
+            else:
+                action_primary = self.request.POST.get("action_primary")
+                action_send = self.request.POST.get("action_send")
+                action_remove = self.request.POST.get("action_remove")
+
+                if action_primary:
+                    message = "E-mail primário definido com sucesso!"
+                elif action_send:
+                    message = "E-mail de verificação reenviado com sucesso!"
+                elif action_remove:
+                    message = "E-mail removido com sucesso!"
+                else:
+                    message = "Operação realizada com sucesso!"
+
+            # Criar trigger com mensagem de sucesso
+            trigger_data = json.dumps(
+                {
+                    "showMessageCreatedUser": {
+                        "message": message,
+                        "type": "success",
+                    },
+                },
+            )
+
+            # Renderizar a aba de e-mail atualizada
+            response = render(
+                self.request,
+                "users/detail/tabs/email.html",
+                {"email_form": AddEmailForm(user=self.request.user)},
+            )
+            response["HX-Trigger"] = trigger_data
+            return response
+
+        return response
+
+    def form_invalid(self, form):
+        # Se for uma requisição HTMX, renderizar a aba com erros
+        if self.request.headers.get("HX-Request"):
+            return render(
+                self.request,
+                "users/detail/tabs/email.html",
+                {"email_form": form},
+            )
+        return super().form_invalid(form)
+
+
+custom_email_view = CustomEmailView.as_view()
+
+
+class CustomPasswordChangeView(AllauthPasswordChangeView):
+    """View customizada para mudança de senha que retorna o
+    conteúdo da aba de segurança"""
+
+    def get_success_url(self):
+        # Se for uma requisição HTMX, não redirecionamos
+        if self.request.headers.get("HX-Request"):
+            return None
+        return super().get_success_url()
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Se for uma requisição HTMX, renderizar a aba de segurança atualizada
+        if self.request.headers.get("HX-Request"):
+            # Remover o force_password_change do usuário se existir
+            if hasattr(self.request.user, "force_password_change"):
+                self.request.user.force_password_change = False
+                self.request.user.save()
+
+            # Criar trigger com mensagem de sucesso
+            trigger_data = json.dumps(
+                {
+                    "showMessageCreatedUser": {
+                        "message": "Senha alterada com sucesso!",
+                        "type": "success",
+                    },
+                },
+            )
+
+            # Renderizar a aba de segurança atualizada
+            response = render(
+                self.request,
+                "users/detail/tabs/security.html",
+                {
+                    "password_change_form": ChangePasswordForm(user=self.request.user),
+                    "force_password_change": False,  # Reset após mudança de senha
+                },
+            )
+            response["HX-Trigger"] = trigger_data
+            return response
+
+        return response
+
+    def form_invalid(self, form):
+        # Se for uma requisição HTMX, renderizar a aba com erros
+        if self.request.headers.get("HX-Request"):
+            force_password_change = self.request.GET.get(
+                "force_password_change",
+            ) == "true" or getattr(self.request.user, "force_password_change", False)
+            return render(
+                self.request,
+                "users/detail/tabs/security.html",
+                {
+                    "password_change_form": form,
+                    "force_password_change": force_password_change,
+                },
+            )
+        return super().form_invalid(form)
+
+
+custom_password_change_view = CustomPasswordChangeView.as_view()

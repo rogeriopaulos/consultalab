@@ -1,5 +1,7 @@
 from django.urls import path
 
+from .views import custom_email_view
+from .views import custom_password_change_view
 from .views import user_admin_section_update_view
 from .views import user_create_view
 from .views import user_detail_modal_view
@@ -32,4 +34,14 @@ partials = [
     path("editar-nome/", view=user_name_edit_view, name="name_edit"),
 ]
 
-urlpatterns += partials
+# URLs customizadas para sobrescrever as views do allauth
+custom_allauth_overrides = [
+    path("email-personalizado/", view=custom_email_view, name="custom_email"),
+    path(
+        "alterar-senha-personalizado/",
+        view=custom_password_change_view,
+        name="custom_password_change",
+    ),
+]
+
+urlpatterns += partials + custom_allauth_overrides

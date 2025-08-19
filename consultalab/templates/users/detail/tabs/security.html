@@ -10,14 +10,18 @@
   <i class="fa-solid fa-key"></i> Alterar Senha
 </h5>
 <form method="post"
-      action="{% url 'account_change_password' %}"
+      action="{% url 'users:custom_password_change' %}"
       class="password_change"
       id="id_password_change_form">
   {% csrf_token %}
   {{ password_change_form|crispy }}
   <button class="primaryAction btn btn-dark fw-bold text-uppercase"
           type="submit"
-          name="action">
+          name="action"
+          hx-post="{% url 'users:custom_password_change' %}"
+          hx-target="#tab-content"
+          hx-swap="innerHTML"
+          hx-include="#id_password_change_form">
     <i class="fa-solid fa-arrows-rotate"></i> Alterar Senha
   </button>
 </form>

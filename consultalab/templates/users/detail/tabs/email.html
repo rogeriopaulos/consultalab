@@ -9,7 +9,10 @@
       Os seguintes endereços de e-mail estão associados a sua conta:
     {% endif %}
   </p>
-  <form action="{% url 'account_email' %}" class="email_list" method="post">
+  <form action="{% url 'users:custom_email' %}"
+        class="email_list"
+        method="post"
+        id="email-list-form">
     {% csrf_token %}
     <fieldset class="blockLabels">
       {% for emailaddress in user.emailaddress_set.all %}
@@ -36,17 +39,29 @@
       <div class="form-group">
         <button class="secondaryAction btn btn-sm btn-primary"
                 type="submit"
-                name="action_primary">
+                name="action_primary"
+                hx-post="{% url 'users:custom_email' %}"
+                hx-target="#tab-content"
+                hx-swap="innerHTML"
+                hx-include="#email-list-form">
           <i class="fa-solid fa-dice-one"></i> Definir como Primário
         </button>
         <button class="secondaryAction btn btn-sm btn-secondary"
                 type="submit"
-                name="action_send">
+                name="action_send"
+                hx-post="{% url 'users:custom_email' %}"
+                hx-target="#tab-content"
+                hx-swap="innerHTML"
+                hx-include="#email-list-form">
           <i class="fa-solid fa-envelope"></i> Reenviar E-mail de Verificação
         </button>
         <button class="primaryAction btn btn-sm btn-danger"
                 type="submit"
-                name="action_remove">
+                name="action_remove"
+                hx-post="{% url 'users:custom_email' %}"
+                hx-target="#tab-content"
+                hx-swap="innerHTML"
+                hx-include="#email-list-form">
           <i class="fa-solid fa-trash"></i> Remover
         </button>
       </div>
@@ -67,10 +82,19 @@
 <h5 class="text-secondary">
   <i class="fa-solid fa-envelope-circle-check"></i> Adicionar Endereço de E-mail
 </h5>
-<form method="post" action="{% url 'account_email' %}" class="add_email">
+<form method="post"
+      action="{% url 'users:custom_email' %}"
+      class="add_email"
+      id="add-email-form">
   {% csrf_token %}
   {{ email_form|crispy }}
-  <button class="btn btn-outline-dark btn-sm" name="action_add" type="submit">
+  <button class="btn btn-outline-dark btn-sm"
+          name="action_add"
+          type="submit"
+          hx-post="{% url 'users:custom_email' %}"
+          hx-target="#tab-content"
+          hx-swap="innerHTML"
+          hx-include="#add-email-form">
     <i class="fa-solid fa-plus"></i> Adicionar Endereço de E-mail
   </button>
 </form>
