@@ -55,8 +55,8 @@
       <i class="bi bi-people"></i> Permissões:
     </div>
     <div class="col fw-light">
-      {% for perm in user.user_permissions.all %}
-        <span class="badge bg-{% cycle 'primary' 'success' 'warning' 'dark' %} bg-gradient text-white">{{ perm.codename }}</span>
+      {% for perm in user.get_user_permissions %}
+        <span class="badge text-bg-{{ perm.badge_class }}">{{ perm.text }}</span>
       {% empty %}
         -----
       {% endfor %}
