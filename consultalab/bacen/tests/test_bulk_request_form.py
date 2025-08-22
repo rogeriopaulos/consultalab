@@ -1,4 +1,5 @@
 import tempfile
+from pathlib import Path
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -15,7 +16,6 @@ EXPECTED_INVALID_COUNT = 2
 class BulkRequestFormTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="testuser",
             email="test@example.com",
             name="Test User",
         )
@@ -31,10 +31,20 @@ class BulkRequestFormTest(TestCase):
 
         with tempfile.NamedTemporaryFile(mode="w+", suffix=".txt", delete=False) as f:
             f.write(content)
-            f.seek(0)
+            f.flush()  # Força a escrita no disco
+
+            # Reopen o arquivo como um arquivo para upload
+            from django.core.files.uploadedfile import SimpleUploadedFile
+
+            with Path(f.name).open("rb") as file_content:
+                uploaded_file = SimpleUploadedFile(
+                    name="test.txt",
+                    content=file_content.read(),
+                    content_type="text/plain",
+                )
 
             form_data = {}
-            file_data = {"arquivo_txt": f}
+            file_data = {"arquivo_txt": uploaded_file}
             form = BulkRequestForm(form_data, file_data)
 
             assert form.is_valid()

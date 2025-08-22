@@ -13,7 +13,6 @@ from django.urls import reverse
 
 from consultalab.users.forms import UserAdminChangeForm
 from consultalab.users.models import User
-from consultalab.users.tests.factories import UserFactory
 from consultalab.users.views import UserRedirectView
 from consultalab.users.views import UserUpdateView
 from consultalab.users.views import user_detail_view
@@ -121,7 +120,7 @@ class TestUserRedirectView:
 class TestUserDetailView:
     def test_authenticated(self, user: User, rf: RequestFactory):
         request = rf.get("/fake-url/")
-        request.user = UserFactory()
+        request.user = user  # Usar o mesmo usuário para requisição e detalhes
         response = user_detail_view(request, pk=user.pk)
 
         assert response.status_code == HTTPStatus.OK
