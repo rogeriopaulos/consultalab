@@ -95,6 +95,25 @@ jobs:
     name: Build and Push Production Django Image
     needs: pytest
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      DJANGO_SECRET_KEY: 123456ABCDEF
+      DJANGO_ADMIN_URL: admin/
+      REDIS_URL: redis://redis:6379/0
+      CELERY_FLOWER_USER: flower
+      CELERY_FLOWER_PASSWORD: flower
+      BACEN_API_DICT_BASEURL: https://www3.bcb.gov.br
+      BACEN_API_DICT_USER: bacen
+      BACEN_API_DICT_PASSWORD: bacen
+      SENTRY_DSN: https://examplePublicKey@o0.ingest.sentry.io/0
+      SENTRY_TRACES_SAMPLE_RATE: 1.0
+      SENDGRID_API_KEY: SG.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: consultalabdb
+      POSTGRES_USER: deploy
+      POSTGRES_PASSWORD: deploy123
+      DATABASE_URL: postgres://deploy:deploy123@postgres:5432/consultalabdb
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     permissions:
       contents: read
