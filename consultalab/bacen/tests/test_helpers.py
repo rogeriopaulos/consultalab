@@ -1,3 +1,4 @@
+import pytest
 from django.conf import settings
 
 from consultalab.bacen.api import BacenRequestApi
@@ -7,6 +8,7 @@ from consultalab.bacen.helpers import camelcase_to_snake_case
 class TestBacenRequestApi:
     request_api = BacenRequestApi()
 
+    @pytest.mark.integrations_test
     def test_get_pix_by_cpf(self):
         response = self.request_api.get_pix_by_cpf_cnpj(
             settings.BACEN_API_DICT_CPF_TEST,
@@ -17,6 +19,7 @@ class TestBacenRequestApi:
         assert "data" in response
         assert len(response["data"]) > 0
 
+    @pytest.mark.integrations_test
     def test_get_pix_by_cnpj(self):
         response = self.request_api.get_pix_by_cpf_cnpj(
             settings.BACEN_API_DICT_CNPJ_TEST,

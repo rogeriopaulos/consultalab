@@ -6,6 +6,9 @@ python_files = [
     "tests.py",
     "test_*.py",
 ]
+markers = [
+    "integrations_test"
+]
 
 # ==== Coverage ====
 [tool.coverage.run]
