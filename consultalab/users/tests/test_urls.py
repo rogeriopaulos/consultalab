@@ -10,10 +10,10 @@ def test_detail(user: User):
 
 
 def test_update():
-    assert reverse("users:update") == "/usuarios/~update/"
-    assert resolve("/usuarios/~update/").view_name == "users:update"
+    assert reverse("users:update") == "/usuarios/~editar/"
+    assert resolve("/usuarios/~editar/").view_name == "users:update"
 
 
 def test_redirect():
-    assert reverse("users:redirect") == "/usuarios/~redirect/"
-    assert resolve("/usuarios/~redirect/").view_name == "users:redirect"
+    assert reverse("users:redirect") == "/usuarios/~redirecionar/"
+    assert resolve("/usuarios/~redirecionar/").view_name == "users:redirect"

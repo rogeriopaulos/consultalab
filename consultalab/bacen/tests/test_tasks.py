@@ -10,6 +10,7 @@ from consultalab.bacen.tasks import request_bacen_pix
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.integrations_test
 def test_request_bacen_pix(settings, requisicao_bacen_cpf: RequisicaoBacen):
     task_result = request_bacen_pix.delay(requisicao_bacen_cpf.termo_busca)
     assert isinstance(task_result, AsyncResult)

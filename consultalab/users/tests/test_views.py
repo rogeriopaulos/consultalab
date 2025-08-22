@@ -10,7 +10,6 @@ from django.http import HttpRequest
 from django.http import HttpResponseRedirect
 from django.test import RequestFactory
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 
 from consultalab.users.forms import UserAdminChangeForm
 from consultalab.users.models import User
@@ -61,15 +60,52 @@ class TestUserUpdateView:
         request.user = user
 
         view.request = request
+        view.object = user  # Set the object as it would be set by UpdateView
 
         # Initialize the form
         form = UserAdminChangeForm()
         form.cleaned_data = {}
         form.instance = user
-        view.form_valid(form)
+        response = view.form_valid(form)
 
+        # Para requisições não-HTMX, o método apenas retorna a resposta normal
+        # sem adicionar mensagens ao sistema de mensagens do Django
         messages_sent = [m.message for m in messages.get_messages(request)]
-        assert messages_sent == [_("Information successfully updated")]
+        assert messages_sent == []
+
+        # Verificar que a resposta foi retornada corretamente
+        assert response is not None
+
+    def test_form_valid_htmx_request(self, user: User, rf: RequestFactory):
+        """Testa o comportamento do form_valid para requisições HTMX"""
+        view = UserUpdateView()
+        request = rf.post("/fake-url/")
+
+        # Simular uma requisição HTMX
+        request.META["HTTP_HX_REQUEST"] = "true"
+
+        # Add the session/message middleware to the request
+        SessionMiddleware(self.dummy_get_response).process_request(request)
+        MessageMiddleware(self.dummy_get_response).process_request(request)
+        request.user = user
+
+        view.request = request
+        view.object = user  # Set the object as it would be set by UpdateView
+
+        # Initialize the form
+        form = UserAdminChangeForm()
+        form.cleaned_data = {}
+        form.instance = user
+        response = view.form_valid(form)
+
+        # Para requisições HTMX, o método retorna um template renderizado
+        # com um trigger HX-Trigger no header
+        assert response is not None
+        assert "HX-Trigger" in response
+
+        # Verificar que não usa o sistema de mensagens do Django para HTMX
+        messages_sent = [m.message for m in messages.get_messages(request)]
+        assert messages_sent == []
 
 
 class TestUserRedirectView:
