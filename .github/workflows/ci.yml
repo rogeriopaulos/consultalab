@@ -4,16 +4,7 @@ name: CI
 env:
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
-  USE_DOCKER: yes
-  IPYTHONDIR: /app/.ipython
-  REDIS_URL: redis://redis:6379/0
-  CELERY_FLOWER_USER: flower
-  CELERY_FLOWER_PASSWORD: flower
-  BACEN_API_DICT_BASEURL: https://www.bcb.gov.br
-  BACEN_API_DICT_USER: bacen
-  BACEN_API_DICT_PASSWORD: bacen
-  BACEN_API_DICT_CPF_TEST: 97482676015
-  BACEN_API_DICT_CNPJ_TEST: 58911805000177
+
 
 on:
   pull_request:
@@ -46,6 +37,17 @@ jobs:
   # With no caching at all the entire ci process takes 3m to complete!
   pytest:
     runs-on: ubuntu-latest
+    env:
+      USE_DOCKER: yes
+      IPYTHONDIR: /app/.ipython
+      REDIS_URL: redis://redis:6379/0
+      CELERY_FLOWER_USER: flower
+      CELERY_FLOWER_PASSWORD: flower
+      BACEN_API_DICT_BASEURL: https://www.bcb.gov.br
+      BACEN_API_DICT_USER: bacen
+      BACEN_API_DICT_PASSWORD: bacen
+      BACEN_API_DICT_CPF_TEST: 97482676015
+      BACEN_API_DICT_CNPJ_TEST: 58911805000177
 
     steps:
       - name: Checkout Code Repository
