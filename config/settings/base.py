@@ -345,8 +345,8 @@ BACEN_API_DICT_BASEURL = env(
     "BACEN_API_DICT_BASEURL",
     default="https://www3.bcb.gov.br/bc_ccs/rest",
 )
-BACEN_API_DICT_USER = env("BACEN_API_DICT_USER")
-BACEN_API_DICT_PASSWORD = env("BACEN_API_DICT_PASSWORD")
+BACEN_API_DICT_USER = env("BACEN_API_DICT_USER", default="bacen")
+BACEN_API_DICT_PASSWORD = env("BACEN_API_DICT_PASSWORD", default="bacen")
 BACEN_API_INFORMES = env(
     "BACEN_API_INFORMES",
     default="https://www3.bcb.gov.br/informes/rest",
