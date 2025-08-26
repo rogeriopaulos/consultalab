@@ -151,6 +151,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     # https://django-auditlog.readthedocs.io/en/latest/usage.html#middleware
     "auditlog.middleware.AuditlogMiddleware",
+    "consultalab.core.custom_middlewares.ForceTwoFactorMiddleware",
     "consultalab.core.custom_middlewares.ForceChangePasswordMiddleware",
     # https://django-axes.readthedocs.io/en/latest/2_installation.html
     "axes.middleware.AxesMiddleware",
@@ -336,6 +337,14 @@ ACCOUNT_FORMS = {
 SOCIALACCOUNT_ADAPTER = "consultalab.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_FORMS = {"signup": "consultalab.users.forms.UserSocialSignupForm"}
+
+# django-allauth MFA
+# ------------------------------------------------------------------------------
+# https://docs.allauth.org/en/latest/mfa/configuration.html
+MFA_TOTP_PERIOD = 30
+MFA_TOTP_DIGITS = 6
+MFA_RECOVERY_CODE_COUNT = 10
+MFA_SUPPORTED_TYPES = ["totp", "recovery_codes"]
 
 
 # Your stuff...
