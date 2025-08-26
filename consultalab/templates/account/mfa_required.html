@@ -6,15 +6,27 @@
 {% block head_title %}
   {% trans "Autenticação de Dois Fatores Obrigatória" %}
 {% endblock head_title %}
+{% block extra_css %}
+  {{ block.super }}
+  <link href="{% static 'css/mfa.css' %}" rel="stylesheet" />
+{% endblock extra_css %}
 {% block content %}
   <div class="card-header">
-    <h2 class="card-title text-warning">
-      <i class="bi bi-shield-exclamation me-2"></i>
-      Configuração de Segurança Obrigatória
-    </h2>
-    <p class="card-description">
+    <div class="text-center mb-3">
+      <i class="bi bi-shield-exclamation text-warning display-4"></i>
+    </div>
+    <h2 class="card-title text-center">Configuração de Segurança Obrigatória</h2>
+    <p class="card-description text-center">
       Por questões de segurança, todos os usuários devem configurar a autenticação de dois fatores (2FA) para acessar o sistema.
     </p>
+    {% if redirect_field_value %}
+      <div class="text-center">
+        <small class="text-muted">
+          <i class="bi bi-info-circle me-1"></i>
+          Após configurar, você voltará para: <strong>{{ redirect_field_value }}</strong>
+        </small>
+      </div>
+    {% endif %}
   </div>
   <div class="card-content">
     <div class="alert alert-warning border-0 mb-4" role="alert">
@@ -75,7 +87,7 @@
       </div>
     </div>
     <div class="action-buttons">
-      <a href="{% url 'mfa_activate_totp' %}"
+      <a href="{% url 'mfa_activate_totp' %}{% if redirect_field_value %}?{{ redirect_field_name }}={{ redirect_field_value|urlencode }}{% endif %}"
          class="btn btn-primary btn-lg w-100 mb-3">
         <i class="bi bi-shield-plus me-2"></i>
         Configurar Autenticação de Dois Fatores
@@ -95,43 +107,3 @@
     </div>
   </div>
 {% endblock content %}
-{% block extra_css %}
-  {{ block.super }}
-  <style>
-    .step-card {
-      background: #f8f9fa;
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      padding: 15px;
-      text-align: center;
-      height: 100%;
-    }
-
-    .step-number {
-      background: var(--cl-primary);
-      color: white;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 10px;
-      font-weight: 600;
-    }
-
-    .step-card h6 {
-      color: #495057;
-      margin-bottom: 5px;
-    }
-
-    .step-card p {
-      color: #6c757d;
-      margin-bottom: 0;
-    }
-
-    .security-info li {
-      padding: 5px 0;
-    }
-  </style>
-{% endblock extra_css %}

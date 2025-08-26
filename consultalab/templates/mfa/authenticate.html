@@ -1,0 +1,114 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load i18n %}
+{% load allauth account %}
+
+{% block head_title %}
+  {% trans "Autenticação de Dois Fatores" %}
+{% endblock head_title %}
+{% block content %}
+  <div class="card-header">
+    <div class="text-center mb-3">
+      <i class="bi bi-shield-lock text-primary display-4"></i>
+    </div>
+    <h2 class="card-title text-center">{% trans "Autenticação de Dois Fatores" %}</h2>
+    <p class="card-description text-center">
+      {% blocktranslate %}Sua conta está protegida por autenticação de dois fatores. Digite o código do seu app autenticador para continuar.{% endblocktranslate %}
+    </p>
+  </div>
+  <div class="card-content">
+    {% url 'mfa_authenticate' as action_url %}
+    {% element form form=form method="post" action=action_url %}
+    {% slot body %}
+    {% csrf_token %}
+    <div class="mb-4">
+      <label for="{{ form.code.id_for_label }}" class="form-label">
+        <i class="bi bi-123"></i> Código de Autenticação
+      </label>
+      <input type="text"
+             class="form-control form-control-lg text-center"
+             id="{{ form.code.id_for_label }}"
+             name="{{ form.code.name }}"
+             placeholder="000000"
+             maxlength="6"
+             autocomplete="one-time-code"
+             required
+             autofocus />
+      <div class="form-text text-center">Digite o código de 6 dígitos do seu app autenticador</div>
+    </div>
+  {% endslot %}
+  {% slot actions %}
+  <div class="d-grid gap-2">
+    {% element button type="submit" tags="primary,lg,mfa,login" %}
+    <i class="bi bi-unlock"></i> {% trans "Entrar" %}
+  {% endelement %}
+  {% if "webauthn" not in MFA_SUPPORTED_TYPES %}
+    <button form="logout-from-stage"
+            type="submit"
+            class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Cancelar
+    </button>
+  {% endif %}
+</div>
+{% endslot %}
+{% endelement %}
+{% if "webauthn" in MFA_SUPPORTED_TYPES %}
+  <hr class="my-4" />
+  <div class="text-center">
+    <h6 class="text-muted mb-3">{% translate "Opções alternativas" %}</h6>
+    <button id="mfa_webauthn_authenticate"
+            type="button"
+            class="btn btn-outline-primary w-100"
+            form="webauthn_form">
+      <i class="bi bi-key"></i> {% trans "Usar chave de segurança" %}
+    </button>
+  </div>
+{% endif %}
+<!-- Ajuda -->
+<div class="mt-4">
+  <div class="alert alert-light border" role="alert">
+    <div class="row g-2 text-center small">
+      <div class="col-md-6">
+        <i class="bi bi-phone text-muted"></i>
+        <div>Perdeu o dispositivo?</div>
+        <a href="{% url 'mfa_authenticate' %}" class="text-decoration-none">Use código de backup</a>
+      </div>
+      <div class="col-md-6">
+        <i class="bi bi-question-circle text-muted"></i>
+        <div>Problemas para acessar?</div>
+        <span class="text-muted">Entre em contato com suporte</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% comment %} {% element button type="submit" form="logout-from-stage" tags="outline,primary,mfa,cancel" %}
+    {% trans "Cancel" %}
+{% endelement %} {% endcomment %}
+{% if "webauthn" in MFA_SUPPORTED_TYPES %}
+  {% element form id="webauthn_form" form=webauthn_form method="post" action=action_url no_visible_fields=True %}
+  {% slot body %}
+  {% csrf_token %}
+  {% element fields form=webauthn_form %}
+{% endelement %}
+{% endslot %}
+{% endelement %}
+{{ js_data|json_script:"js_data" }}
+{% include "mfa/webauthn/snippets/scripts.html" %}
+<script data-allauth-onload="allauth.webauthn.forms.authenticateForm" type="application/json">
+  {
+    "ids": {
+      "authenticate": "mfa_webauthn_authenticate",
+      "credential": "{{ webauthn_form.credential.auto_id }}",
+      "data": "js_data"
+    }
+  }
+</script>
+{% endif %}
+<form id="logout-from-stage"
+      method="post"
+      action="{% url 'account_logout' %}">
+  <input type="hidden" name="next" value="{% url 'account_login' %}" />
+  {% csrf_token %}
+</form>
+{% endblock content %}

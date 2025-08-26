@@ -1,0 +1,152 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load allauth i18n static %}
+
+{% block head_title %}
+  {% translate "Configurar Autenticação de Dois Fatores" %}
+{% endblock head_title %}
+{% block extra_css %}
+  <link href="{% static 'css/mfa.css' %}" rel="stylesheet" />
+{% endblock extra_css %}
+{% block javascript %}
+  {{ block.super }}
+  <script defer src="{% static 'js/activate_form.js' %}"></script>
+{% endblock javascript %}
+{% block content %}
+  <div class="card-header">
+    <div class="text-center mb-3">
+      <i class="bi bi-shield-plus text-warning display-4"></i>
+    </div>
+    <h2 class="card-title text-center">{% translate "Configurar 2FA" %}</h2>
+    <p class="card-description text-center">
+      Adicione uma camada extra de segurança à sua conta. O 2FA é <strong>obrigatório</strong> para todos os usuários.
+    </p>
+  </div>
+  <div class="card-content">
+    <!-- Benefícios do 2FA -->
+    <div class="security-benefits mb-4">
+      <div class="row g-2">
+        <div class="col-6">
+          <div class="benefit-item">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <span>Protege contra roubo de senha</span>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="benefit-item">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <span>Reduz acesso não autorizado</span>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="benefit-item">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <span>Exigido por segurança</span>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="benefit-item">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <span>Protege dados sensíveis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Instruções -->
+    <div class="setup-instructions mb-4">
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong>O que você precisa:</strong> Um app autenticador como Google Authenticator, Authy ou Microsoft Authenticator instalado no seu celular.
+      </div>
+    </div>
+    <!-- Formulário de Ativação -->
+    {% url 'mfa_activate_totp' as action_url %}
+    {% element form form=form method="post" action=action_url %}
+    {% slot body %}
+    {% csrf_token %}
+    <!-- Seção do QR Code -->
+    <div class="qr-section mb-4">
+      <div class="card p-3 text-center">
+        <h6 class="mb-3">
+          <i class="bi bi-qr-code me-2"></i>
+          Escaneie o código QR
+        </h6>
+        {% element img src=totp_svg_data_uri alt="QR Code para configuração do 2FA" tags="mfa,totp,qr" %}
+      {% endelement %}
+      <small class="text-muted mt-2">Abra seu app autenticador e escaneie o código acima</small>
+    </div>
+  </div>
+  <!-- Chave Manual (Colapsável) -->
+  <div class="manual-key mb-4">
+    <div class="accordion" id="manualKeyAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#manualKey"
+                  aria-expanded="false">
+            <i class="bi bi-key me-2"></i>
+            Não consegue escanear? Use a chave manual
+          </button>
+        </h2>
+        <div id="manualKey"
+             class="accordion-collapse collapse"
+             data-bs-parent="#manualKeyAccordion">
+          <div class="accordion-body">
+            <label class="form-label">Chave do autenticador:</label>
+            <div class="input-group">
+              <input type="text"
+                     class="form-control font-monospace"
+                     value="{{ form.secret }}"
+                     readonly
+                     id="secret-key" />
+              <button class="btn btn-outline-secondary"
+                      type="button"
+                      onclick="copyToClipboard('secret-key')">
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+            <small class="form-text text-muted">
+              Guarde esta chave em local seguro. Você pode usá-la para reinstalar o autenticador depois.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Campo de Verificação -->
+  <div class="verification-section">
+    <h6 class="mb-3">
+      <i class="bi bi-shield-check me-2"></i>
+      Confirme a configuração
+    </h6>
+    <div class="mb-3">
+      <label for="{{ form.code.id_for_label }}" class="form-label">
+        <i class="bi bi-123"></i> Código de Verificação
+      </label>
+      <input type="text"
+             class="form-control form-control-lg text-center"
+             id="{{ form.code.id_for_label }}"
+             name="{{ form.code.name }}"
+             placeholder="000000"
+             maxlength="6"
+             autocomplete="one-time-code"
+             required />
+      <small class="form-text text-muted">
+        Digite o código de 6 dígitos que aparece no seu app autenticador para confirmar a configuração.
+      </small>
+    </div>
+  </div>
+{% endslot %}
+{% slot actions %}
+<div class="d-grid gap-2 mt-4">
+  {% element button type="submit" tags="primary,lg,mfa" %}
+  <i class="bi bi-shield-check me-2"></i>
+  {% trans "Ativar 2FA" %}
+{% endelement %}
+</div>
+{% endslot %}
+{% endelement %}
+</div>
+{% endblock content %}

@@ -1,0 +1,398 @@
+/* MFA Specific Styles */
+
+/* Step Cards for Setup Flow */
+.step-card {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: var(--space-4);
+  text-align: center;
+  height: 100%;
+  transition: all 0.2s ease;
+}
+
+.step-card:hover {
+  background: var(--blue-50);
+  border-color: var(--primary-blue);
+}
+
+.step-number {
+  background: var(--primary-blue);
+  color: var(--white);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-3);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+
+.step-card h6 {
+  color: var(--gray-700);
+  margin-bottom: var(--space-1);
+  font-weight: var(--font-weight-medium);
+}
+
+.step-card p {
+  color: var(--gray-600);
+  margin-bottom: 0;
+  font-size: var(--font-size-sm);
+}
+
+/* Security Info Lists */
+.security-info li {
+  padding: var(--space-1) 0;
+  font-size: var(--font-size-sm);
+}
+
+.security-info .bi-check-circle-fill {
+  font-size: var(--font-size-base);
+}
+
+/* Device Items in MFA Index */
+.device-item {
+  transition: all 0.2s ease;
+}
+
+.device-item:hover {
+  background: var(--blue-50) !important;
+  border-color: var(--primary-blue) !important;
+}
+
+.device-actions .btn {
+  min-width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Recovery Codes Grid */
+.codes-grid .code-item {
+  background: var(--gray-50) !important;
+  border: 1px solid var(--gray-200) !important;
+  transition: all 0.2s ease;
+}
+
+.codes-grid .code-item:hover {
+  background: var(--blue-50) !important;
+  border-color: var(--primary-blue) !important;
+}
+
+.codes-grid code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  background: transparent;
+  padding: 0;
+  color: var(--gray-800);
+}
+
+/* QR Code Section */
+.qr-section .card {
+  background: var(--gray-50) !important;
+}
+
+.qr-section img {
+  border: 2px solid var(--white);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Alert Customizations */
+.alert.border-0 {
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.alert-warning.border-0 {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border-left: 4px solid #f39c12;
+}
+
+.alert-danger.border-0 {
+  background: linear-gradient(135deg, #f8d7da 0%, #fab1a0 100%);
+  border-left: 4px solid #e74c3c;
+}
+
+.alert-success.border-0 {
+  background: linear-gradient(135deg, #d4edda 0%, #a8e6cf 100%);
+  border-left: 4px solid #27ae60;
+}
+
+.alert-info.border-0 {
+  background: linear-gradient(135deg, #cce7ff 0%, #a8d8ea 100%);
+  border-left: 4px solid var(--primary-blue);
+}
+
+/* Button Enhancements */
+.btn-lg {
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.btn i {
+  margin-right: var(--space-2);
+}
+
+.btn:last-child i {
+  margin-right: var(--space-2);
+}
+
+/* Form Enhancements */
+.form-control-lg.text-center {
+  letter-spacing: 0.2em;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-xl);
+}
+
+.form-text {
+  font-size: var(--font-size-sm);
+  color: var(--gray-600);
+}
+
+/* Card Enhancements */
+.card.border-0.shadow-lg {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+}
+
+.card-header.bg-white {
+  border-radius: 12px 12px 0 0 !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .step-card {
+    padding: var(--space-3);
+  }
+
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .codes-grid .row {
+    gap: var(--space-2) !important;
+  }
+
+  .btn-lg {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Print Styles for Recovery Codes */
+@media print {
+  .btn, .alert-heading, nav, footer, .card-header {
+    display: none !important;
+  }
+
+  .card {
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+  }
+
+  .code-item {
+    break-inside: avoid;
+    border: 1px solid #ccc !important;
+  }
+
+  .codes-grid code {
+    color: #000 !important;
+    font-size: 14px !important;
+  }
+
+  body {
+    background: white !important;
+  }
+}
+
+/* Loading States */
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn[disabled]:hover {
+  transform: none;
+}
+
+/* Focus States for Accessibility */
+.btn:focus,
+.form-control:focus {
+  box-shadow: 0 0 0 3px rgba(17, 92, 144, 0.25);
+  border-color: var(--primary-blue);
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: high) {
+  .step-card,
+  .device-item,
+  .code-item {
+    border: 2px solid #000 !important;
+  }
+
+  .alert {
+    border: 2px solid #000 !important;
+  }
+}
+
+/* 2FA Activation Form Specific Styles */
+.security-benefits {
+  background: var(--gray-50);
+  border-radius: 8px;
+  padding: var(--space-4);
+  border: 1px solid var(--gray-200);
+}
+
+.benefit-item {
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.benefit-item:last-child {
+  margin-bottom: 0;
+}
+
+.setup-instructions .alert {
+  border-left: 4px solid var(--primary-blue);
+  background: var(--blue-50);
+  border-color: var(--blue-200);
+}
+
+.qr-section .card {
+  background: var(--gray-50) !important;
+  border: 2px dashed var(--gray-300);
+  transition: all 0.2s ease;
+}
+
+.qr-section .card:hover {
+  border-color: var(--primary-blue);
+  background: var(--blue-50) !important;
+}
+
+.qr-section img {
+  border: 2px solid var(--white);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 200px;
+  height: auto;
+}
+
+.manual-key .accordion-button {
+  background: var(--gray-50);
+  border-color: var(--gray-200);
+  color: var(--gray-700);
+  font-size: var(--font-size-sm);
+}
+
+.manual-key .accordion-button:not(.collapsed) {
+  background: var(--blue-50);
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+}
+
+.manual-key .font-monospace {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: var(--font-size-sm);
+  background: var(--gray-100);
+  border: 1px solid var(--gray-300);
+}
+
+.verification-section {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: var(--space-4);
+}
+
+.verification-section h6 {
+  color: var(--gray-700);
+  margin-bottom: var(--space-3);
+}
+
+/* Copy button animation */
+.btn-outline-secondary:hover {
+  background: var(--gray-100);
+  border-color: var(--gray-400);
+}
+
+/* Form enhancements for better UX */
+.form-control[maxlength="6"] {
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.5rem;
+  padding: var(--space-3);
+}
+
+.form-control[maxlength="6"]:focus {
+  box-shadow: 0 0 0 3px rgba(17, 92, 144, 0.15);
+  border-color: var(--primary-blue);
+}
+
+/* Toast notification for copy action */
+.copy-feedback {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1050;
+  background: var(--green-600);
+  color: white;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.copy-feedback.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .qr-section img {
+    max-width: 150px;
+  }
+
+  .benefit-item {
+    font-size: 0.75rem;
+  }
+
+  .manual-key .accordion-button {
+    font-size: 0.8rem;
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
+/* Pulse animation for button feedback */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(17, 92, 144, 0.4);
+  }
+  70% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(17, 92, 144, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(17, 92, 144, 0);
+  }
+}
+
+.pulse-animation {
+  animation: pulse 1s;
+}
