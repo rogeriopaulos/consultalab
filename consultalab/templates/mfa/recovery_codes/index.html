@@ -1,0 +1,50 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load allauth i18n static %}
+
+{% block head_title %}
+  {% translate "Recovery Codes" %}
+{% endblock head_title %}
+{% block extra_css %}
+  <link href="{% static 'css/mfa.css' %}" rel="stylesheet" />
+{% endblock extra_css %}
+{% block content %}
+  <div class="card-header text-center mb-3">
+    <i class="bi bi-shield-lock display-4 text-primary"></i>
+    <h2 class="card-title mt-2">{% translate "Códigos de Recuperação" %}</h2>
+  </div>
+  <div class="card-content">
+    {% element p %}
+    {% blocktranslate count unused_count=unused_codes|length %}
+        Existe {{ unused_count }} de {{ total_count }} códigos de recuperação disponíveis.
+      {% plural %}
+        Existem {{ unused_count }} de {{ total_count }} códigos de recuperação disponíveis.
+      {% endblocktranslate %}
+  {% endelement %}
+  {% element field id="recovery_codes" type="textarea" disabled=True rows=unused_codes|length readonly=True %}
+  {% slot label %}
+  {% translate "Códigos não utilizados" %}
+{% endslot %}
+{% slot value %}
+{% for code in unused_codes %}{{ code }}{% endfor %}
+{% endslot %}
+{% endelement %}
+<div class="d-grid gap-2 mt-3">
+  {% if unused_codes %}
+    {% url 'mfa_download_recovery_codes' as download_url %}
+    {% element button href=download_url %}
+    <i class="bi bi-download me-2"></i> {% translate "Baixar códigos" %}
+  {% endelement %}
+{% endif %}
+{% url 'mfa_generate_recovery_codes' as generate_url %}
+{% element button href=generate_url tags="secondary" %}
+<i class="bi bi-arrow-clockwise me-2"></i> {% translate "Gerar novos códigos" %}
+{% endelement %}
+</div>
+<div class="d-flex justify-content-end align-items-center mt-3">
+  <a href="{% url "core:home" %}" class="text-decoration-none">
+    Ir para a página inicial <i class="bi bi-arrow-right"></i>
+  </a>
+</div>
+</div>
+{% endblock content %}

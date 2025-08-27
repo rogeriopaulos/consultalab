@@ -1,0 +1,52 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load allauth i18n static %}
+
+{% block head_title %}
+  {% translate "Gerar Códigos de Recuperação" %}
+{% endblock head_title %}
+{% block extra_css %}
+  <link href="{% static 'css/mfa.css' %}" rel="stylesheet" />
+{% endblock extra_css %}
+{% block content %}
+  <div class="card-header text-center mb-3">
+    <i class="bi bi-shield-lock display-4 text-primary"></i>
+    <h2 class="card-title mt-2">{% translate "Gerar Códigos de Recuperação" %}</h2>
+  </div>
+  <div class="card-content">
+    {% element p %}
+    {% blocktranslate %}Você está prestes a gerar um novo conjunto de códigos de recuperação para sua conta.{% endblocktranslate %}
+    {% if unused_code_count %}
+      {% blocktranslate %}Esta ação invalidará seus códigos existentes.{% endblocktranslate %}
+    {% endif %}
+    {% blocktranslate %}Tem certeza?{% endblocktranslate %}
+  {% endelement %}
+  {% url 'mfa_generate_recovery_codes' as action_url %}
+  {% element form method="post" action=action_url no_visible_fields=True %}
+  {% slot body %}
+  {% csrf_token %}
+  {{ form.as_p }}
+{% endslot %}
+{% slot actions %}
+<div class="d-grid gap-2 mt-3">
+  {% setvar tags %}
+  {% if unused_code_count %}
+    danger
+  {% else %}
+    primary
+  {% endif %}
+{% endsetvar %}
+{% element button type="submit" tags=tags %}
+<i class="bi bi-arrow-clockwise me-2"></i> {% translate "Gerar Códigos" %}
+{% endelement %}
+</div>
+{% endslot %}
+{% endelement %}
+<div class="d-flex justify-content-end align-items-center mt-3">
+  <a href="{% url "mfa_view_recovery_codes" %}"
+     class="text-decoration-none">
+    Voltar aos códigos <i class="bi bi-arrow-right"></i>
+  </a>
+</div>
+</div>
+{% endblock content %}
