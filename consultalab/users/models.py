@@ -1,7 +1,9 @@
 from typing import ClassVar
 
+from allauth.account.signals import email_confirmed
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -91,3 +93,13 @@ class User(AbstractUser):
             for perm, label in perm_map.items()
             if self.has_perm(perm)
         ]
+
+
+@receiver(email_confirmed)
+def set_new_user_inactive(request, email_address, **kwargs):
+    """Por padrão, todo novo usuário registrado, exceto o superusuário, será
+    inativo."""
+    user = User.objects.get(email=email_address.email)
+    if not user.is_superuser:
+        user.is_active = False
+        user.save()

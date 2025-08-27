@@ -129,6 +129,7 @@ class UserUpdateForm(ModelForm):
             "email",
             "department",
             "user_permissions",
+            "is_active",
         )
 
     def __init__(self, *args, **kwargs):

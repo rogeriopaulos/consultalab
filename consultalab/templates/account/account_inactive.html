@@ -1,0 +1,53 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load i18n %}
+{% load allauth %}
+
+{% block head_title %}
+  {% translate "Conta Inativa" %}
+{% endblock head_title %}
+{% block content %}
+  <div class="card-header text-center mb-3">
+    <i class="bi bi-person-x display-4 text-warning"></i>
+    <h2 class="card-title mt-2">{% translate "Conta Inativa" %}</h2>
+  </div>
+  <div class="card-content">
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      <strong>Atenção:</strong> {% translate "Esta conta está inativa e não pode ser usada para fazer login." %}
+    </div>
+    <div class="info-section mb-4">
+      <h6 class="mb-3">
+        <i class="bi bi-info-circle me-2"></i>
+        O que fazer?
+      </h6>
+      <div class="row g-2">
+        <div class="col-12">
+          <div class="info-item">
+            <i class="bi bi-envelope me-2 text-primary"></i>
+            <span>Entre em contato com o administrador do sistema</span>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="info-item">
+            <i class="bi bi-person-check me-2 text-primary"></i>
+            <span>Solicite a ativação da sua conta</span>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="info-item">
+            <i class="bi bi-clock me-2 text-primary"></i>
+            <span>Aguarde a aprovação para acessar o sistema</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-grid gap-2">
+      <a role="button"
+         href="{% url 'account_login' %}"
+         class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left me-2"></i> {% translate "Voltar ao Login" %}
+      </a>
+    </div>
+  </div>
+{% endblock content %}
