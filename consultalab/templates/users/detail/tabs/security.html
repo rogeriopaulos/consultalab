@@ -13,7 +13,7 @@
   </h5>
   <div class="card border-0 shadow-sm">
     <div class="card-body">
-      {% if user.mfa_authenticators.exists %}
+      {% if user.authenticator_set.exists %}
         <!-- 2FA Ativado -->
         <div class="d-flex align-items-center justify-content-between mb-3">
           <div class="d-flex align-items-center">
@@ -28,9 +28,11 @@
         </div>
         <div class="row g-2">
           <div class="col-md-6">
-            <a href="{% url 'mfa_index' %}" class="btn btn-outline-primary w-100">
-              <i class="bi bi-gear"></i> Gerenciar Dispositivos
+            <a href="{% url 'mfa_deactivate_totp' %}"
+               class="btn btn-outline-danger w-100">
+              <i class="bi bi-shield-x"></i> Desativar 2FA
             </a>
+            <small class="d-block text-muted mt-1">⚠️ Não recomendado</small>
           </div>
           <div class="col-md-6">
             <a href="{% url 'mfa_view_recovery_codes' %}"
@@ -38,14 +40,6 @@
               <i class="bi bi-key"></i> Códigos de Backup
             </a>
           </div>
-        </div>
-        <hr class="my-3" />
-        <div class="text-center">
-          <a href="{% url 'mfa_deactivate_totp' %}"
-             class="btn btn-outline-danger btn-sm">
-            <i class="bi bi-shield-x"></i> Desativar 2FA
-          </a>
-          <small class="d-block text-muted mt-1">⚠️ Não recomendado para segurança</small>
         </div>
       {% else %}
         <!-- 2FA Não Configurado -->

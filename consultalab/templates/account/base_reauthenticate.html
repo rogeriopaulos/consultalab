@@ -1,0 +1,38 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load allauth i18n %}
+
+{% block head_title %}
+  {% trans "Confirmar Acesso" %}
+{% endblock head_title %}
+{% block content %}
+  <div class="card-header text-center mb-3">
+    <i class="bi bi-shield-lock display-4 text-warning"></i>
+    <h2 class="card-title mt-2">{% trans "Confirmar Acesso" %}</h2>
+    <p class="card-description">
+      {% blocktranslate %}Por favor, confirme sua identidade para proteger sua conta.{% endblocktranslate %}
+    </p>
+  </div>
+  <div class="card-content">
+    {% block reauthenticate_content %}
+    {% endblock reauthenticate_content %}
+    {% if reauthentication_alternatives %}
+      <div class="alternatives-section mt-4">
+        <div class="cl-divider">
+          <span>ou</span>
+        </div>
+        <h6 class="text-center mb-3">
+          <i class="bi bi-arrow-left-right me-2"></i>
+          {% translate "Opções alternativas" %}
+        </h6>
+        <div class="d-grid gap-2">
+          {% for alt in reauthentication_alternatives %}
+            {% element button href=alt.url tags="outline,primary" %}
+            <i class="bi bi-key me-2"></i>{{ alt.description }}
+          {% endelement %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock content %}

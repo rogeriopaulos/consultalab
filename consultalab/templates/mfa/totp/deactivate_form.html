@@ -1,0 +1,73 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% load allauth i18n static %}
+
+{% block head_title %}
+  {% translate "Desativar Autenticação de Dois Fatores" %}
+{% endblock head_title %}
+{% block extra_css %}
+  <link href="{% static 'css/mfa.css' %}" rel="stylesheet" />
+{% endblock extra_css %}
+{% block content %}
+  <div class="card-header text-center mb-3">
+    <i class="bi bi-shield-minus display-4 text-danger"></i>
+    <h2 class="card-title mt-2">{% translate "Desativar 2FA" %}</h2>
+  </div>
+  <div class="card-content">
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      <strong>Atenção:</strong> O 2FA é obrigatório para todos os usuários deste sistema.
+      Após a desativação, você será automaticamente redirecionado para configurar um novo dispositivo 2FA.
+      Tem certeza?
+    </div>
+    <div class="security-warning mb-4">
+      <div class="row g-2">
+        <div class="col-6">
+          <div class="warning-item">
+            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+            <span>Reduz a segurança da conta</span>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="warning-item">
+            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+            <span>Aumenta risco de invasão</span>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="warning-item">
+            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+            <span>Remove proteção extra</span>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="warning-item">
+            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+            <span>Não recomendado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% url 'mfa_deactivate_totp' as action_url %}
+    {% element form form=form method="post" action=action_url no_visible_fields=True %}
+    {% slot body %}
+    {% csrf_token %}
+    {% element fields form=form %}
+    {{ form.as_p }}
+  {% endelement %}
+{% endslot %}
+{% slot actions %}
+<div class="d-grid gap-2 mt-4">
+  {% element button tags="danger,lg" type="submit" %}
+  <i class="bi bi-shield-minus me-2"></i> {% translate "Desativar 2FA" %}
+{% endelement %}
+</div>
+{% endslot %}
+{% endelement %}
+<div class="d-flex justify-content-end align-items-center mt-3">
+  <a href="{% url "account_login" %}" class="text-decoration-none">
+    Cancelar <i class="bi bi-arrow-right"></i>
+  </a>
+</div>
+</div>
+{% endblock content %}
