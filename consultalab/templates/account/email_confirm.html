@@ -18,7 +18,7 @@
       {% if can_confirm %}
         <div class="notice">
           <p>
-            {% blocktrans with confirmation.email_address.email as email %}Por favor, confirme que <strong>{{ email }}</strong> é um endereço de email para o usuário {{ user_display }}.{% endblocktrans %}
+            {% blocktrans with confirmation.email_address.email as email %}Por favor, confirme que <strong>{{ email }}</strong> é um endereço de email válido.{% endblocktrans %}
           </p>
         </div>
         {% url 'account_confirm_email' confirmation.key as action_url %}
